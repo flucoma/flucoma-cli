@@ -177,7 +177,7 @@ class CLIWrapper
       return kErrNone;
     }
     
-    ErrorType validate(int& i, int argc, const char* argv[])
+    ErrorType operator()(int& i, int argc, const char* argv[])
     {
       if (!isOption(argv[i]))
         return kErrNoOption;
@@ -185,14 +185,14 @@ class CLIWrapper
       if (!strcmp(argv[i], getOptionName<N>().c_str()))
         return checkValues(i, argc, argv, getParamSize<N>(), ParamArgType<N>());
       
-      return ValidateParams<L, N + 1>().validate(i, argc, argv);
+      return ValidateParams<L, N + 1>()(i, argc, argv);
     }
   };
   
   template <size_t N>
   struct ValidateParams<N, N>
   {
-    ErrorType validate(int& i, int argc, const char* argv[]) { return kErrUnknownOption; }
+    ErrorType operator()(int& i, int argc, const char* argv[]) { return kErrUnknownOption; }
   };
   
   template <size_t N, typename T>
@@ -236,7 +236,7 @@ public:
     
     for (int i = 1; i < argc; )
     {
-      switch (ValidateParams<nParams>().validate(i, argc, argv))
+      switch (ValidateParams<nParams>()(i, argc, argv))
       {
         case kErrNone:            break;
         case kErrNoOption:        std::cout << "Expected option, but found " << argv[i] << "\n";    return -2;
