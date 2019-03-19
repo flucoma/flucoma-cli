@@ -158,9 +158,7 @@ class CLIWrapper
     {
       return s.find_first_not_of("0123456789.", s[0] == '-', d ? 11 : 10) == std::string::npos;
     };
-    
-    bool isOption(ConstString s) { return s[0] == '-' && !numeric(s); }
-    
+      
     bool testString(ConstString s, LongT::type)   { return numeric(s, false); }
     bool testString(ConstString s, FloatT::type)  { return numeric(s) && s.find(".") == s.find_last_of("."); }
     bool testString(ConstString s, BufferT::type) { return s[0] != '-'; }
@@ -181,7 +179,7 @@ class CLIWrapper
     
     ErrorType operator()(int& i, int argc, const char* argv[])
     {
-      if (!isOption(argv[i]))
+      if (argv[i][0] != '-' || numeric(argv[i]))
         return kErrNoOption;
       
       if (!strcmp(argv[i], optionName<N>().c_str()))
