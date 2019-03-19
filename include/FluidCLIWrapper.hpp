@@ -131,20 +131,20 @@ class CLIWrapper
   template <size_t N>
   using ParamArgType = ParamLiteralType<typename ParamDescType::template DescriptorTypeAt<N>>;
   
-  static constexpr auto getDescriptors() { return ClientType::getParameterDescriptors(); }
+  static constexpr auto descriptors() { return ClientType::getParameterDescriptors(); }
   
-  static constexpr size_t nParams = getDescriptors().size();
-  
-  template <size_t N>
-  static constexpr size_t getParamSize() { return getDescriptors().template get<N>().fixedSize; }
+  static constexpr size_t nParams = descriptors().size();
   
   template <size_t N>
-  static constexpr auto getParamDefault() { return getDescriptors().template get<N>().defaultValue; }
+  static constexpr size_t paramSize() { return descriptors().template get<N>().fixedSize; }
   
   template <size_t N>
-  static std::string getOptionName()
+  static constexpr auto paramDefault() { return descriptors().template get<N>().defaultValue; }
+  
+  template <size_t N>
+  static std::string optionName()
   {
-    std::string str(getDescriptors().template name<N>());
+    std::string str(descriptors().template name<N>());
     std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) { return std::tolower(c); });
     str.insert(0, "-");
     
@@ -184,8 +184,8 @@ class CLIWrapper
       if (!isOption(argv[i]))
         return kErrNoOption;
       
-      if (!strcmp(argv[i], getOptionName<N>().c_str()))
-        return checkValues(i, argc, argv, getParamSize<N>(), ParamArgType<N>());
+      if (!strcmp(argv[i], optionName<N>().c_str()))
+        return checkValues(i, argc, argv, paramSize<N>(), ParamArgType<N>());
       
       return ValidateParams<L, N + 1>()(i, argc, argv);
     }
@@ -214,18 +214,18 @@ class CLIWrapper
     {
       for (auto i = 0; i < argc; i++)
       {
-        if (!strcmp(argv[i], getOptionName<N>().c_str()))
+        if (!strcmp(argv[i], optionName<N>().c_str()))
         {
           std::vector<ParamLiteralType<T>> v;
 
-          for (auto j = 1; j <= getParamSize<N>(); j++)
+          for (auto j = 1; j <= paramSize<N>(); j++)
             v.push_back(fromString(argv[i + j], ParamLiteralType<T>()));
           
-          return val(v, std::make_index_sequence<getParamSize<N>()>());
+          return val(v, std::make_index_sequence<paramSize<N>()>());
         }
       }
       
-      return getParamDefault<N>();
+      return paramDefault<N>();
     }
   };
   
@@ -233,7 +233,7 @@ public:
   
   static int run(int argc, const char* argv[])
   {
-    ParamSetType params(getDescriptors());
+    ParamSetType params(descriptors());
     ClientType client(params);
     
     for (int i = 1; i < argc; )
