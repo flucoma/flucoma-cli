@@ -217,7 +217,7 @@ class CLIWrapper
       {
         if (!strcmp(argv[i], optionName<N>().c_str()))
         {
-          ParamArraySetter<T, paramSize<N>()> a;
+          ParamLiteralConvertor<T, paramSize<N>()> a;
 
           for (auto j = 1; j <= paramSize<N>(); j++)
             a[i] = fromString(argv[i + j], a[0]);
