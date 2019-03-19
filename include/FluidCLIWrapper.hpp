@@ -33,7 +33,8 @@ public:
     {
       resize(file.getFrames(), file.getChannels(), 1);
       mWrite = false;
-      
+      mSamplingRate = file.getSamplingRate();
+        
       for (auto i = 0; i < file.getChannels(); i++)
       {
         file.seek();
@@ -48,12 +49,12 @@ public:
     {
       if (numFrames())
       {
-        // TODO: file extensions and sample rate
+        // TODO: file extensions
         
         constexpr auto fileType = HISSTools::BaseAudioFile::kAudioFileWAVE;
         constexpr auto depthType = HISSTools::BaseAudioFile::kAudioFileFloat32;
         
-        HISSTools::OAudioFile file(mPath, fileType, depthType, mData.size(), 44100);
+        HISSTools::OAudioFile file(mPath, fileType, depthType, mData.size(), mSamplingRate);
         
         if (file.isOpen())
         {
@@ -106,6 +107,7 @@ private:
   bool mWrite;
   bool mAcquired;
   size_t mRank;
+  double mSamplingRate = 44100.0;
   std::vector<std::vector<float>> mData;
 };
 
