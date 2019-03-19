@@ -1,0 +1,11 @@
+
+target_link_libraries(
+  ${PROG}
+  PUBLIC
+  FLUID_DECOMPOSITION
+  FLUID_CLI_WRAPPER
+  HISSTools_AudioFile
+)
+
+get_property(HEADERS TARGET FLUID_DECOMPOSITION PROPERTY INTERFACE_SOURCES)
+source_group(TREE "${FLUID_PATH}/include" FILES ${HEADERS})
