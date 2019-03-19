@@ -207,14 +207,16 @@ class CLIWrapper
   template <size_t N, typename T>
   struct Setter
   {
+    using ArrayType = std::array<ParamLiteralType<T>, paramSize<N>()>;
+      
     auto fromString(ConstString s, LongT::type) { return std::stol(s); }
     auto fromString(ConstString s, FloatT::type) { return std::stod(s); }
     auto fromString(ConstString s, BufferT::type) { return BufferT::type(new CLIBufferAdaptor(s)); }
 
     template <size_t... Is>
-    typename T::type val(std::vector<ParamLiteralType<T>> &v, std::index_sequence<Is...>)
+    typename T::type val(ArrayType &a, std::index_sequence<Is...>)
     {
-      return typename T::type{v[Is]...};
+      return typename T::type{a[Is]...};
     }
     
     typename T::type operator()(int argc, const char* argv[])
@@ -223,12 +225,12 @@ class CLIWrapper
       {
         if (!strcmp(argv[i], optionName<N>().c_str()))
         {
-          std::vector<ParamLiteralType<T>> v;
+          ArrayType a;
 
           for (auto j = 1; j <= paramSize<N>(); j++)
-            v.push_back(fromString(argv[i + j], ParamLiteralType<T>()));
+            a[i] = fromString(argv[i + j], a[0]);
           
-          return val(v, std::make_index_sequence<paramSize<N>()>());
+          return val(a, std::make_index_sequence<paramSize<N>()>());
         }
       }
       
