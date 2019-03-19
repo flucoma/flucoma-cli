@@ -46,25 +46,22 @@ public:
   
   ~CLIBufferAdaptor()
   {
-    if (mWrite)
+    if (!mWrite || !numFrames())
+      return;
+    
+    // TODO: file extensions/paths
+      
+    constexpr auto fileType = HISSTools::BaseAudioFile::kAudioFileWAVE;
+    constexpr auto depthType = HISSTools::BaseAudioFile::kAudioFileFloat32;
+      
+    HISSTools::OAudioFile file(mPath, fileType, depthType, mData.size(), mSamplingRate);
+      
+    if (file.isOpen())
     {
-      if (numFrames())
+      for (auto i = 0; i < mData.size(); i++)
       {
-        // TODO: file extensions
-        
-        constexpr auto fileType = HISSTools::BaseAudioFile::kAudioFileWAVE;
-        constexpr auto depthType = HISSTools::BaseAudioFile::kAudioFileFloat32;
-        
-        HISSTools::OAudioFile file(mPath, fileType, depthType, mData.size(), mSamplingRate);
-        
-        if (file.isOpen())
-        {
-          for (auto i = 0; i < mData.size(); i++)
-          {
-            file.seek();
-            file.writeChannel(mData[i].data(), static_cast<uint32_t>(numFrames()), i);
-          }
-        }
+        file.seek();
+        file.writeChannel(mData[i].data(), static_cast<uint32_t>(numFrames()), i);
       }
     }
   }
