@@ -201,22 +201,7 @@ class CLIWrapper
     auto fromString(ConstString s, LongT::type) { return std::stol(s); }
     auto fromString(ConstString s, FloatT::type) { return std::stod(s); }
     auto fromString(ConstString s, BufferT::type) { return BufferT::type(new CLIBufferAdaptor(s)); }
-    
-    auto getArgs(int argc, const char* argv[])
-    {
-      std::vector<ParamLiteralType<T>> v;
-      std::string name = getOptionName<N>();
-      
-      for (auto i = 0; i < argc; i++)
-      {
-        if (!strcmp(argv[i], name.c_str()))
-          for (auto j = 1; j <= getParamSize<N>(); j++)
-            v.push_back(fromString(argv[i + j], ParamLiteralType<T>()));
-      }
-      
-      return v;
-    }
-    
+
     template <size_t... Is>
     typename T::type val(std::vector<ParamLiteralType<T>> &v, std::index_sequence<Is...>)
     {
@@ -225,8 +210,20 @@ class CLIWrapper
     
     typename T::type operator()(int argc, const char* argv[])
     {
-      auto v = getArgs(argc, argv);
-      return v.size() ? val(v, std::make_index_sequence<getParamSize<N>()>()) : getParamDefault<N>();
+      for (auto i = 0; i < argc; i++)
+      {
+        if (!strcmp(argv[i], getOptionName<N>().c_str()))
+        {
+          std::vector<ParamLiteralType<T>> v;
+
+          for (auto j = 1; j <= getParamSize<N>(); j++)
+            v.push_back(fromString(argv[i + j], ParamLiteralType<T>()));
+          
+          return val(v, std::make_index_sequence<getParamSize<N>()>());
+        }
+      }
+      
+      return getParamDefault<N>();
     }
   };
   
