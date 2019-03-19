@@ -9,6 +9,7 @@
 #include <HISSTools_AudioFile/IAudioFile.h>
 #include <HISSTools_AudioFile/OAudioFile.h>
 
+#include <array>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -119,6 +120,7 @@ class CLIWrapper
     kErrNone,
     kErrNoOption,
     kErrUnknownOption,
+    kErrAlreadySet,
     kErrMissingVals,
     kErrValType
   };
@@ -150,6 +152,8 @@ class CLIWrapper
     
     return str;
   }
+    
+  using FlagsType = std::array<bool, nParams>;
   
   template <size_t L, size_t N = 0>
   struct ValidateParams
@@ -177,22 +181,30 @@ class CLIWrapper
       return kErrNone;
     }
     
-    ErrorType operator()(int& i, int argc, const char* argv[])
+    ErrorType operator()(int& i, int argc, const char* argv[], FlagsType& flags)
     {
       if (argv[i][0] != '-' || numeric(argv[i]))
         return kErrNoOption;
       
       if (!strcmp(argv[i], optionName<N>().c_str()))
+      {
+        if (flags[N])
+          return kErrAlreadySet;
+        flags[N] = true;
         return checkValues(i, argc, argv, paramSize<N>(), ParamArgType<N>());
+      }
       
-      return ValidateParams<L, N + 1>()(i, argc, argv);
+      return ValidateParams<L, N + 1>()(i, argc, argv, flags);
     }
   };
   
   template <size_t N>
   struct ValidateParams<N, N>
   {
-    ErrorType operator()(int& i, int argc, const char* argv[]) { return kErrUnknownOption; }
+    ErrorType operator()(int& i, int argc, const char* argv[], FlagsType& flags)
+    {
+      return kErrUnknownOption;
+    }
   };
   
   template <size_t N, typename T>
@@ -229,20 +241,29 @@ class CLIWrapper
   
 public:
   
+  static void report(const char* str1, const char * str2)
+  {
+    std::cout << str1 << " " << str2 << "\n";
+  }
+    
   static int run(int argc, const char* argv[])
   {
     ParamSetType params(descriptors());
     ClientType client(params);
-    
+    FlagsType flags;
+      
+    flags.fill(false);
+      
     for (int i = 1; i < argc; )
     {
-      switch (ValidateParams<nParams>()(i, argc, argv))
+      switch (ValidateParams<nParams>()(i, argc, argv, flags))
       {
         case kErrNone:            break;
-        case kErrNoOption:        std::cout << "Expected option, but found " << argv[i] << "\n";    return -2;
-        case kErrUnknownOption:   std::cout << "Unknown option " << argv[i] << "\n";                return -3;
-        case kErrMissingVals:     std::cout << "Missing values for option " << argv[i] << "\n";     return -4;
-        case kErrValType:         std::cout << "Values wrong type for option " << argv[i] << "\n";  return -5;
+        case kErrNoOption:        report("Expected option, but found", argv[i]);    return -2;
+        case kErrUnknownOption:   report("Unknown option", argv[i]);                return -3;
+        case kErrAlreadySet:      report("More than one use of option", argv[i]);   return -4;
+        case kErrMissingVals:     report("Missing values for option", argv[i]);     return -5;
+        case kErrValType:         report("Values wrong type for option", argv[i]);  return -6;
       }
     }
     
