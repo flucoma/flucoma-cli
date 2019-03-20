@@ -129,15 +129,15 @@ class CLIWrapper
   static constexpr size_t nParams = descriptors().size();
   
   template <size_t N>
-  static constexpr size_t paramSize() { return descriptors().template get<N>().fixedSize; }
-  
+  static constexpr auto paramDescriptor() { return descriptors().template get<N>(); }
+    
   template <size_t N>
-  static constexpr auto paramDefault() { return descriptors().template get<N>().defaultValue; }
+  static constexpr size_t paramSize() { return paramDescriptor<N>().fixedSize; }
   
   template <size_t N>
   static std::string optionName()
   {
-    std::string str(descriptors().template name<N>());
+    std::string str(paramDescriptor<N>().name);
     std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) { return std::tolower(c); });
     str.insert(0, "-");
     
@@ -223,7 +223,7 @@ class CLIWrapper
         }
       }
       
-      return paramDefault<N>();
+      return paramDescriptor<N>().defaultValue;
     }
   };
   
