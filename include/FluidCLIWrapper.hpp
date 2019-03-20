@@ -9,7 +9,6 @@
 #include <HISSTools_AudioFile/IAudioFile.h>
 #include <HISSTools_AudioFile/OAudioFile.h>
 
-#include <array>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -123,15 +122,10 @@ class CLIWrapper
   };
   
   using ClientType = Client<float>;
-  using ParamDescType = typename ClientType::ParamDescType;
   using ParamSetType = typename ClientType::ParamSetType;
   using ConstString = const std::string;
   
-  template <size_t N>
-  using ParamArgType = ParamLiteralType<typename ParamDescType::template DescriptorTypeAt<N>>;
-  
   static constexpr auto descriptors() { return ClientType::getParameterDescriptors(); }
-  
   static constexpr size_t nParams = descriptors().size();
   
   template <size_t N>
@@ -180,6 +174,9 @@ class CLIWrapper
     
     ErrorType operator()(int& i, int argc, const char* argv[], FlagsType& flags)
     {
+      using T = typename ClientType::ParamDescType::template ParamType<N>;
+      using ArgType = typename ParamLiteralConvertor<T, paramSize<N>()>::LiteralType;
+        
       if (argv[i][0] != '-' || numeric(argv[i]))
         return kErrNoOption;
       
@@ -188,7 +185,7 @@ class CLIWrapper
         if (flags[N])
           return kErrAlreadySet;
         flags[N] = true;
-        return checkValues(i, argc, argv, paramSize<N>(), ParamArgType<N>());
+        return checkValues(i, argc, argv, paramSize<N>(), ArgType());
       }
       
       return ValidateParams<L, N + 1>()(i, argc, argv, flags);
