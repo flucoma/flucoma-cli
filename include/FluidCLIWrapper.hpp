@@ -216,8 +216,8 @@ class CLIWrapper
         {
           ParamLiteralConvertor<T, paramSize<N>()> a;
 
-          for (auto j = 1; j <= paramSize<N>(); j++)
-            a[i] = fromString(argv[i + j], a[0]);
+          for (auto j = 0; j < paramSize<N>(); j++)
+            a[j] = fromString(argv[i + j + 1], a[0]);
           
           return a.value();
         }
