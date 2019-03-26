@@ -82,6 +82,7 @@ private:
       c.resize(frames);
     
     std::swap(newData, mData);
+    mRank = rank;
     mWrite = true;
   }
   
