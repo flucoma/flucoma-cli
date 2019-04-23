@@ -31,9 +31,8 @@ public:
     
     if (file.isOpen())
     {
-      resize(file.getFrames(), file.getChannels(), 1);
+      resize(file.getFrames(), file.getChannels(), 1, file.getSamplingRate());
       mWrite = false;
-      mSamplingRate = file.getSamplingRate();
         
       for (auto i = 0; i < file.getChannels(); i++)
       {
@@ -73,7 +72,9 @@ private:
   bool valid() const override { return numFrames(); }
   bool exists() const override  { return true; }
   
-  void resize(size_t frames, size_t channels, size_t rank) override
+  double sampleRate() const override { return mSamplingRate; }
+    
+  void resize(size_t frames, size_t channels, size_t rank, double sampleRate) override
   {
     std::vector<std::vector<float>> newData;
     
@@ -84,6 +85,7 @@ private:
     std::swap(newData, mData);
     mRank = rank;
     mWrite = true;
+    mSamplingRate = sampleRate;
   }
   
   fluid::FluidTensorView<float, 1> samps(size_t channel, size_t rankIdx) override
