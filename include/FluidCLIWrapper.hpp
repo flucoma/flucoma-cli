@@ -10,6 +10,7 @@
 #include <HISSTools_AudioFile/OAudioFile.h>
 
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <vector>
 #include <utility>
@@ -230,6 +231,21 @@ class CLIWrapper
     }
   };
   
+  template <size_t N, typename T>
+  struct Help
+  {
+    void operator()(T descriptor)
+    {
+      std::cout << std::setw(25) << std::setfill(' ');
+      std::cout.unsetf(std::ios::right);
+      std::cout.setf(std::ios::left);
+      std::cout << descriptor.name;
+      std::cout.unsetf(std::ios::left);
+      std::cout.setf(std::ios::right);
+      std::cout << descriptor.displayName << "\n";
+    }
+  };
+    
 public:
   
   static void report(const char* str1, const char * str2)
@@ -245,6 +261,13 @@ public:
       
     flags.fill(false);
       
+    if (argc > 1 && (!strcmp(argv[1], "-h") || !strcmp(argv[1], "help")))
+    {
+      std::cout << "Call with these options:\n";
+      descriptors().template iterate<Help>();
+      return 0;
+    }
+                            
     for (int i = 1; i < argc; )
     {
       switch (ValidateParams<nParams>()(i, argc, argv, flags))
