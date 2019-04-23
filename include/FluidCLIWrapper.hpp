@@ -239,7 +239,7 @@ class CLIWrapper
       std::cout << std::setw(25) << std::setfill(' ');
       std::cout.unsetf(std::ios::right);
       std::cout.setf(std::ios::left);
-      std::cout << descriptor.name;
+      std::cout << "-" << descriptor.name;
       std::cout.unsetf(std::ios::left);
       std::cout.setf(std::ios::right);
       std::cout << descriptor.displayName << "\n";
