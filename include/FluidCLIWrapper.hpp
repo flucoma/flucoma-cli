@@ -236,13 +236,10 @@ class CLIWrapper
   {
     void operator()(T descriptor)
     {
-      std::string option("-");
-        
-      option.append(descriptor.name);
       std::cout << std::setw(25) << std::setfill(' ');
       std::cout.unsetf(std::ios::right);
       std::cout.setf(std::ios::left);
-      std::cout << option;
+      std::cout << optionName<N>();
       std::cout.unsetf(std::ios::left);
       std::cout.setf(std::ios::right);
       std::cout.unsetf(std::ios::right);
