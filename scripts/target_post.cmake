@@ -1,10 +1,15 @@
 
 target_link_libraries(
   ${PROG}
-  PUBLIC
+  PRIVATE
   FLUID_DECOMPOSITION
   FLUID_CLI_WRAPPER
-  HISSTools_AudioFile
+  AUDIOFILELIB
+  FFTLIB
+)
+
+target_compile_options(
+  ${PROG} PRIVATE "$<$<NOT:$<CONFIG:DEBUG>>: -mavx -msse -msse2 -msse3 -msse4>"
 )
 
 set_target_properties(
