@@ -48,16 +48,16 @@ add_library(FFTLIB STATIC ${FFT_SOURCES})
 target_link_libraries(
   FFTLIB PRIVATE ${FFT_LINK}
 )
-target_compile_options(
-  FFTLIB PRIVATE "$<$<NOT:$<CONFIG:DEBUG>>: -mavx -msse -msse2 -msse3 -msse4>"
-)
+# target_compile_options(
+#   FFTLIB PRIVATE "$<$<NOT:$<CONFIG:DEBUG>>: -mavx -msse -msse2 -msse3 -msse4>"
+# )
 
 get_property(AUFIOFILE_SOURCES TARGET HISSTools_AudioFile PROPERTY INTERFACE_SOURCES)
 add_library(AUDIOFILELIB STATIC ${AUFIOFILE_SOURCES})
 
-target_compile_options(
-  AUDIOFILELIB PRIVATE "$<$<NOT:$<CONFIG:DEBUG>>: -mavx -msse -msse2 -msse3 -msse4>"
-)
+# target_compile_options(
+#   AUDIOFILELIB PRIVATE "$<$<NOT:$<CONFIG:DEBUG>>: -mavx -msse -msse2 -msse3 -msse4>"
+# )
 
 
 add_library(FLUID_CLI_WRAPPER INTERFACE)
