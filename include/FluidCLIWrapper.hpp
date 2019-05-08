@@ -129,7 +129,7 @@ class CLIWrapper
   using ParamSetType = typename ClientType::ParamSetType;
   using ConstString = const std::string;
   
-  static constexpr auto descriptors() { return ClientType::getParameterDescriptors(); }
+  static constexpr auto& descriptors() { return ClientType::getParameterDescriptors(); }
   static constexpr size_t nParams = descriptors().size();
   
   template <size_t N>
