@@ -1,4 +1,4 @@
-# Instructions for the Command-Line Interface version of the Fluid.buf* algorythms
+# Instructions for the Command-Line Interface version of the Fluid.buf* algorithms
 
 ## Note: if you never used the Terminal, this is not for you yet, as these instructions are very terse.
 
