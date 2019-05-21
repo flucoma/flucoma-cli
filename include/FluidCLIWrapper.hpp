@@ -24,7 +24,7 @@ class CLIBufferAdaptor : public BufferAdaptor
 public:
   
   CLIBufferAdaptor(const std::string str)
-  : mPath(str), mWrite(false), mAcquired(false), mRank(1)
+  : mPath(str), mWrite(false), mAcquired(false)
   {
     // TODO: only read if needed!...
     
@@ -32,7 +32,7 @@ public:
     
     if (file.isOpen())
     {
-      resize(file.getFrames(), file.getChannels(), 1, file.getSamplingRate());
+      resize(file.getFrames(), file.getChannels(), file.getSamplingRate());
       mWrite = false;
         
       for (auto i = 0; i < file.getChannels(); i++)
@@ -75,23 +75,22 @@ private:
   
   double sampleRate() const override { return mSamplingRate; }
     
-  void resize(size_t frames, size_t channels, size_t rank, double sampleRate) override
+  void resize(size_t frames, size_t channels, double sampleRate) override
   {
     std::vector<std::vector<float>> newData;
     
-    newData.resize(channels * rank);
+    newData.resize(channels);
     for (auto &&c : newData)
       c.resize(frames);
     
     std::swap(newData, mData);
-    mRank = rank;
     mWrite = true;
     mSamplingRate = sampleRate;
   }
   
-  fluid::FluidTensorView<float, 1> samps(size_t channel, size_t rankIdx) override
+  fluid::FluidTensorView<float, 1> samps(size_t channel) override
   {
-    return {mData[rankIdx * numChans() + channel].data(), 0, numFrames()};
+    return {mData[channel].data(), 0, numFrames()};
   }
   
   fluid::FluidTensorView<float, 1> samps(size_t offset, size_t nframes, size_t chanoffset) override
@@ -101,13 +100,11 @@ private:
   }
   
   size_t numFrames() const override { return mData.size() ? mData[0].size() : 0; }
-  size_t numChans() const override { return mData.size() / mRank; }
-  size_t rank() const override { return mRank; }
+  size_t numChans() const override { return mData.size(); }
   
   std::string mPath;
   bool mWrite;
   bool mAcquired;
-  size_t mRank;
   double mSamplingRate = 44100.0;
   std::vector<std::vector<float>> mData;
 };
