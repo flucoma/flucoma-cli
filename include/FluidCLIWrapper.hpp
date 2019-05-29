@@ -254,7 +254,6 @@ public:
   static int run(int argc, const char* argv[])
   {
     ParamSetType params(descriptors());
-    ClientType client(params);
     FlagsType flags;
       
     flags.fill(false);
@@ -284,6 +283,9 @@ public:
     params.template setParameterValues<Setter>(false, argc, argv);
     params.constrainParameterValues();
     
+    // Create client after all parameters are set
+      
+    ClientType client(params);
     auto result = client.process();
     
     if (!result.ok())
