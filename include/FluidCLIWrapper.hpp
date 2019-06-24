@@ -9,6 +9,7 @@
 #include <HISSTools_AudioFile/IAudioFile.h>
 #include <HISSTools_AudioFile/OAudioFile.h>
 
+#include <cctype>
 #include <iostream>
 #include <iomanip>
 #include <string>
