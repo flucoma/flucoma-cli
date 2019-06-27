@@ -97,7 +97,7 @@ private:
   fluid::FluidTensorView<float, 1> samps(size_t offset, size_t nframes, size_t chanoffset) override
   {
     size_t length = offset > numFrames() ? 0 : numFrames() - offset;
-    return {mData[chanoffset].data() + offset, 0, length};
+    return {mData[chanoffset].data() + offset, 0, std::min(length, nframes)};
   }
   
   size_t numFrames() const override { return mData.size() ? mData[0].size() : 0; }
