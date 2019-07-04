@@ -8,9 +8,15 @@ target_link_libraries(
   FFTLIB
 )
 
-# target_compile_options(
-#   ${PROG} PRIVATE "$<$<NOT:$<CONFIG:DEBUG>>: -mavx -msse -msse2 -msse3 -msse4>"
-# )
+if(MSVC)
+  target_compile_options(
+    ${PROG} PRIVATE $<$<NOT:$<CONFIG:DEBUG>>: /arch:AVX -D_USE_MATH_DEFINES>
+  )
+else(MSVC)
+target_compile_options(
+  ${PROG} PRIVATE $<$<NOT:$<CONFIG:DEBUG>>: -mavx -msse -msse2 -msse3 -msse4>
+)
+endif(MSVC)
 
 set_target_properties(
   ${PROG}
