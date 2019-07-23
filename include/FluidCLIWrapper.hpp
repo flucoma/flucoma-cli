@@ -68,15 +68,15 @@ public:
   
 private:
   
-  bool acquire() override   { return !mAcquired && (mAcquired = true); }
-  void release() override   { mAcquired = false; }
+  bool acquire() const override   { return !mAcquired && (mAcquired = true); }
+  void release() const override   { mAcquired = false; }
   
   bool valid() const override { return numFrames(); }
   bool exists() const override  { return true; }
   
   double sampleRate() const override { return mSamplingRate; }
     
-  void resize(size_t frames, size_t channels, double sampleRate) override
+  const Result resize(size_t frames, size_t channels, double sampleRate) override
   {
     std::vector<std::vector<float>> newData;
     
@@ -87,6 +87,7 @@ private:
     std::swap(newData, mData);
     mWrite = true;
     mSamplingRate = sampleRate;
+    return {};
   }
   
   fluid::FluidTensorView<float, 1> samps(size_t channel) override
@@ -100,14 +101,28 @@ private:
     return {mData[chanoffset].data() + offset, 0, std::min(length, nframes)};
   }
   
+  const fluid::FluidTensorView<float, 1> samps(size_t channel) const override
+  {
+    return fluid::FluidTensorView<float, 1>{mData[channel].data(), 0, numFrames()};
+  }
+  
+  const fluid::FluidTensorView<float, 1> samps(size_t offset, size_t nframes, size_t chanoffset) const override
+  {
+    size_t length = offset > numFrames() ? 0 : numFrames() - offset;
+    return fluid::FluidTensorView<float, 1>{mData[chanoffset].data() + offset, 0, std::min(length, nframes)};
+  }
+  
+  
   size_t numFrames() const override { return mData.size() ? mData[0].size() : 0; }
   size_t numChans() const override { return mData.size(); }
   
+  std::string asString() const override { return mPath; }
+  
   std::string mPath;
   bool mWrite;
-  bool mAcquired;
+  mutable bool mAcquired;
   double mSamplingRate = 44100.0;
-  std::vector<std::vector<float>> mData;
+  mutable std::vector<std::vector<float>> mData;
 };
 
 template <template <typename T> class Client>
@@ -159,7 +174,8 @@ class CLIWrapper
     bool testString(ConstString s, LongT::type)   { return numeric(s, false); }
     bool testString(ConstString s, FloatT::type)  { return numeric(s) && s.find(".") == s.find_last_of("."); }
     bool testString(ConstString s, BufferT::type) { return s[0] != '-'; }
-    
+    bool testString(ConstString s, InputBufferT::type) { return s[0] != '-'; }
+
     template<typename T>
     ErrorType checkValues(int& i, int argc, const char* argv[], size_t nArgs, T)
     {
@@ -209,6 +225,7 @@ class CLIWrapper
     auto fromString(ConstString s, LongT::type) { return std::stol(s); }
     auto fromString(ConstString s, FloatT::type) { return std::stod(s); }
     auto fromString(ConstString s, BufferT::type) { return BufferT::type(new CLIBufferAdaptor(s)); }
+    auto fromString(ConstString s, InputBufferT::type) { return InputBufferT::type(new CLIBufferAdaptor(s)); }
 
     typename T::type operator()(int argc, const char* argv[])
     {
