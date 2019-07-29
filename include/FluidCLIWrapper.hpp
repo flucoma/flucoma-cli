@@ -101,15 +101,15 @@ private:
     return {mData[chanoffset].data() + offset, 0, std::min(length, nframes)};
   }
   
-  const fluid::FluidTensorView<float, 1> samps(size_t channel) const override
+  fluid::FluidTensorView<const float, 1> samps(size_t channel) const override
   {
-    return fluid::FluidTensorView<float, 1>{mData[channel].data(), 0, numFrames()};
+    return fluid::FluidTensorView<const float, 1>{mData[channel].data(), 0, numFrames()};
   }
   
-  const fluid::FluidTensorView<float, 1> samps(size_t offset, size_t nframes, size_t chanoffset) const override
+  fluid::FluidTensorView<const float, 1> samps(size_t offset, size_t nframes, size_t chanoffset) const override
   {
     size_t length = offset > numFrames() ? 0 : numFrames() - offset;
-    return fluid::FluidTensorView<float, 1>{mData[chanoffset].data() + offset, 0, std::min(length, nframes)};
+    return fluid::FluidTensorView<const float, 1>{mData[chanoffset].data() + offset, 0, std::min(length, nframes)};
   }
   
   
@@ -122,7 +122,7 @@ private:
   bool mWrite;
   mutable bool mAcquired;
   double mSamplingRate = 44100.0;
-  mutable std::vector<std::vector<float>> mData;
+  std::vector<std::vector<float>> mData;
 };
 
 template <template <typename T> class Client>
