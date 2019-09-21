@@ -10,7 +10,7 @@ target_link_libraries(
 
 if(MSVC)
   target_compile_options(
-    ${PROG} PRIVATE $<$<NOT:$<CONFIG:DEBUG>>: /arch:AVX -D_USE_MATH_DEFINES>
+    ${PROG} PRIVATE $<$<NOT:$<CONFIG:DEBUG>>: /arch:AVX> -D_USE_MATH_DEFINES
   )
 else(MSVC)
 target_compile_options(
