@@ -25,7 +25,7 @@ class CLIBufferAdaptor : public BufferAdaptor
 public:
   
   CLIBufferAdaptor(const std::string str)
-  : mPath(str), mWrite(false), mAcquired(false)
+  : mPath(str), mAcquired(false), mNumChans(1)
   {
     // TODO: only read if needed!...
     
@@ -34,34 +34,50 @@ public:
     if (file.isOpen())
     {
       resize(file.getFrames(), file.getChannels(), file.getSamplingRate());
-      mWrite = false;
         
       for (auto i = 0; i < file.getChannels(); i++)
       {
         file.seek();
-        file.readChannel(mData[i].data(), file.getFrames(), i);
+        file.readChannel(getChannel(i), file.getFrames(), i);
       }
     }
   }
   
-  ~CLIBufferAdaptor()
+  void write(bool allowCSV)
   {
-    if (!mWrite || !numFrames())
+    if (!numFrames())
       return;
     
-    // TODO: file extensions/paths
-      
-    constexpr auto fileType = HISSTools::BaseAudioFile::kAudioFileWAVE;
-    constexpr auto depthType = HISSTools::BaseAudioFile::kAudioFileFloat32;
-      
-    HISSTools::OAudioFile file(mPath, fileType, depthType, mData.size(), mSamplingRate);
-      
-    if (file.isOpen())
+    size_t pathLength = mPath.length();
+    
+    if (allowCSV && (pathLength > 4) && !mPath.compare(pathLength - 4, 4, ".csv"))
     {
-      for (auto i = 0; i < mData.size(); i++)
+      FluidTensorView<const float, 2> view{mData.data(), 0, numChans(), numFrames()};
+      
+      std::ofstream file(mPath.c_str());
+      
+      if (file.is_open())
       {
-        file.seek();
-        file.writeChannel(mData[i].data(), static_cast<uint32_t>(numFrames()), i);
+        file << view;
+        file.close();
+      }
+    }
+    else
+    {
+      // TODO: file extensions/paths
+      
+      constexpr auto fileType = HISSTools::BaseAudioFile::kAudioFileWAVE;
+      constexpr auto depthType = HISSTools::BaseAudioFile::kAudioFileFloat32;
+      
+      HISSTools::OAudioFile file(mPath, fileType, depthType, numChans(), mSamplingRate);
+      
+      if (file.isOpen())
+      {
+        for (auto i = 0; i < numChans(); i++)
+        {
+          file.seek();
+          file.writeChannel(getChannel(i), static_cast<uint32_t>(numFrames()), i);
+        }
       }
     }
   }
@@ -75,54 +91,52 @@ private:
   bool exists() const override  { return true; }
   
   double sampleRate() const override { return mSamplingRate; }
-    
+  
+  const float *getChannel(size_t channel) const { return mData.data() + numFrames() * channel; }
+  float *getChannel(size_t channel) { return mData.data() + numFrames() * channel; }
+  
   const Result resize(size_t frames, size_t channels, double sampleRate) override
   {
     std::vector<std::vector<float>> newData;
     
-    newData.resize(channels);
-    for (auto &&c : newData)
-      c.resize(frames);
-    
-    std::swap(newData, mData);
-    mWrite = true;
+    mNumChans = channels;
+    mData.resize(channels * frames);
     mSamplingRate = sampleRate;
     return {};
   }
   
   fluid::FluidTensorView<float, 1> samps(size_t channel) override
   {
-    return {mData[channel].data(), 0, numFrames()};
+    return {getChannel(channel), 0, numFrames()};
   }
   
   fluid::FluidTensorView<float, 1> samps(size_t offset, size_t nframes, size_t chanoffset) override
   {
     size_t length = offset > numFrames() ? 0 : numFrames() - offset;
-    return {mData[chanoffset].data() + offset, 0, std::min(length, nframes)};
+    return {getChannel(chanoffset) + offset, 0, std::min(length, nframes)};
   }
   
   fluid::FluidTensorView<const float, 1> samps(size_t channel) const override
   {
-    return fluid::FluidTensorView<const float, 1>{mData[channel].data(), 0, numFrames()};
+    return fluid::FluidTensorView<const float, 1>{getChannel(channel), 0, numFrames()};
   }
   
   fluid::FluidTensorView<const float, 1> samps(size_t offset, size_t nframes, size_t chanoffset) const override
   {
     size_t length = offset > numFrames() ? 0 : numFrames() - offset;
-    return fluid::FluidTensorView<const float, 1>{mData[chanoffset].data() + offset, 0, std::min(length, nframes)};
+    return fluid::FluidTensorView<const float, 1>{getChannel(chanoffset) + offset, 0, std::min(length, nframes)};
   }
   
-  
-  size_t numFrames() const override { return mData.size() ? mData[0].size() : 0; }
-  size_t numChans() const override { return mData.size(); }
+  size_t numFrames() const override { return mData.size() / mNumChans; }
+  size_t numChans() const override { return mNumChans; }
   
   std::string asString() const override { return mPath; }
   
   std::string mPath;
-  bool mWrite;
   mutable bool mAcquired;
   double mSamplingRate = 44100.0;
-  std::vector<std::vector<float>> mData;
+  size_t mNumChans;
+  std::vector<float> mData;
 };
 
 template <template <typename T> class Client>
@@ -261,7 +275,17 @@ class CLIWrapper
       std::cout << descriptor.displayName << "\n";
     }
   };
-    
+   
+  template<size_t N, typename T>
+  struct WriteFiles
+  {
+    void operator()(typename T::type& param, bool allowCSV)
+    {
+      if (param)
+        static_cast<CLIBufferAdaptor *>(param.get())->write(allowCSV);
+    }
+  };
+  
 public:
   
   static void report(const char* str1, const char * str2)
@@ -295,9 +319,7 @@ public:
         case kErrValType:         report("Values wrong type for option", argv[i]);  return -6;
       }
     }
-    
-    // TODO: figure out what to do if values require constraints
-    
+      
     params.template setParameterValues<Setter>(false, argc, argv);
     params.constrainParameterValues();
     
@@ -307,8 +329,19 @@ public:
     auto result = client.process();
     
     if (!result.ok())
+    {
+      // Output error
+      
       std::cout << result.message() << "\n";
-    
+    }
+    else
+    {
+      // Write files
+      
+      bool allowCSV = true;
+      params.template forEachParamType<BufferT, WriteFiles>(allowCSV);
+    }
+      
     return result.ok() ? 0 : -1;
   }
 };
