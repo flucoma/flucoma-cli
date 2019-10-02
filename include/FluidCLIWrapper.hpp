@@ -324,9 +324,9 @@ public:
     params.constrainParameterValues();
     
     // Create client after all parameters are set
-      
+    FluidContext context;
     ClientType client(params);
-    auto result = client.process();
+    auto result = client.process(context);
     
     if (!result.ok())
     {
