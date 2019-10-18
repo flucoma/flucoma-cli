@@ -302,8 +302,8 @@ public:
       
     if (argc > 1 && (!strcmp(argv[1], "-h") || !strcmp(argv[1], "help")))
     {
-      std::cout << "Fluid Decomposition Toolkit\nPart of the Fluid Corpus Manipulation Project http:://www.flucoma.org\n";
-      std::cout << "For more a detailed desctription of the avialable options than given below, please see the accompanying HTML documentation.\n"; 
+      std::cout << "Fluid Decomposition Toolkit\nPart of the Fluid Corpus Manipulation Project - http:://www.flucoma.org/\n";
+      std::cout << "For more a detailed desctription of the available options than given below, please see the accompanying HTML documentation.\n"; 
       std::cout << "Call with these options:\n";
       descriptors().template iterate<Help>();
       return 0;
