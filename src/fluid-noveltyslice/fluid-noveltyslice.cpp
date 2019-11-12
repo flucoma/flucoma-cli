@@ -1,9 +1,9 @@
 
 #include <FluidCLIWrapper.hpp>
-#include <clients/rt/NoveltySlice.hpp>
+#include <clients/rt/NoveltySliceClient.hpp>
 
 int main(int argc, const char* argv[])
 {
   using namespace fluid::client;
-  return CLIWrapper<NRTNoveltySlice>::run(argc, argv);
+  return CLIWrapper<NRTNoveltySliceClient>::run(argc, argv);
 }

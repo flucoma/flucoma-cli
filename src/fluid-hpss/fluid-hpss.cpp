@@ -5,5 +5,5 @@
 int main(int argc, const char* argv[])
 {
   using namespace fluid::client;
-  return CLIWrapper<NRTHPSS>::run(argc, argv);
+  return CLIWrapper<NRTHPSSClient>::run(argc, argv);
 }

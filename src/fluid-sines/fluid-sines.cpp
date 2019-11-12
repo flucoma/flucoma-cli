@@ -5,5 +5,5 @@
 int main(int argc, const char* argv[])
 {
   using namespace fluid::client;
-  return CLIWrapper<NRTSines>::run(argc, argv);
+  return CLIWrapper<NRTSinesClient>::run(argc, argv);
 }

@@ -1,9 +1,9 @@
 
 #include <FluidCLIWrapper.hpp>
-#include <clients/rt/OnsetSlice.hpp>
+#include <clients/rt/OnsetSliceClient.hpp>
 
 int main(int argc, const char* argv[])
 {
   using namespace fluid::client;
-  return CLIWrapper<NRTOnsetSlice>::run(argc, argv);
+  return CLIWrapper<NRTOnsetSliceClient>::run(argc, argv);
 }
