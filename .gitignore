@@ -1,4 +1,6 @@
 bin
 build
+winbuild
 **/build/*
 **/.DS_Store
+release-packaging/

@@ -6,8 +6,8 @@
 #include <clients/common/ParameterSet.hpp>
 #include <clients/common/ParameterTypes.hpp>
 
-#include <HISSTools_AudioFile/IAudioFile.h>
-#include <HISSTools_AudioFile/OAudioFile.h>
+#include <AudioFile/IAudioFile.h>
+#include <AudioFile/OAudioFile.h>
 
 #include <cctype>
 #include <iostream>
