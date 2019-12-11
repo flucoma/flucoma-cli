@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.11)
 get_filename_component(PROG ${CMAKE_CURRENT_LIST_DIR} NAME_WE)
 message("Configuring ${PROG}")
 set(FILENAME ${PROG}.cpp)
