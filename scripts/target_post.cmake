@@ -14,11 +14,9 @@ set_target_properties(${PROG}
 )
 
 if (APPLE)
-	set_target_properties(${PROG} PROPERTIES
-    OSX_DEPLOYMENT_TARGET "10.7"
-	) 
   #targeting <= 10.9, need to explicitly set libc++
   target_compile_options(${PROG}  PRIVATE -stdlib=libc++)
+  target_link_libraries(${PROG} PRIVATE -stdlib=libc++)
 endif()
 
 if(MSVC)
@@ -27,9 +25,8 @@ if(MSVC)
   )
   
 else()
-  target_compile_options(
-    #-Wall -Wextra -Wpedantic
-    ${PROG} PUBLIC $<$<NOT:$<CONFIG:DEBUG>>: -mavx>   -Wno-return-type -Wno-conversion -Wno-c++11-narrowing -Wno-sign-compare -Wno-sign-conversion -Wno-unused-parameter -Wno-inconsistent-missing-override -Wno-float-conversion
+  target_compile_options(  
+    ${PROG} PUBLIC $<$<NOT:$<CONFIG:DEBUG>>: -mavx>  -Wall -Wextra -Wpedantic  -Wno-c++11-narrowing 
   )
 endif(MSVC)
 
