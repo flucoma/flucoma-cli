@@ -71,7 +71,8 @@ if(DOCS)
     add_subdirectory(${fluid_paramdump_SOURCE_DIR} ${fluid_paramdump_BINARY_DIR})
   endif()
 
-  add_custom_target(CLI_MAKE_DOCS DEPENDS GENERATE_HTML)  
+  add_custom_target(CLI_MAKE_DOCS ALL DEPENDS MAKE_CLI_DOCS)
+    
 endif()
 
 set(LOCAL_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -109,5 +110,5 @@ install(DIRECTORY "${CMAKE_BINARY_DIR}/bin" DESTINATION ${CLI_PACKAGE_ROOT} USE_
 install(FILES license.md QuickStart.md DESTINATION ${CLI_PACKAGE_ROOT})
 
 if(DOCS)
-  install(DIRECTORY "${CMAKE_BINARY_DIR}/html/" DESTINATION "${CLI_PACKAGE_ROOT}/docs" FILES_MATCHING REGEX "\\.(html|css)")
+  install(DIRECTORY "${CMAKE_BINARY_DIR}/clihtml/" DESTINATION "${CLI_PACKAGE_ROOT}/docs" FILES_MATCHING REGEX "\\.(html|css)")
 endif()
