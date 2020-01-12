@@ -71,7 +71,7 @@ if(DOCS)
     add_subdirectory(${fluid_paramdump_SOURCE_DIR} ${fluid_paramdump_BINARY_DIR})
   endif()
 
-  add_custom_target(CLI_MAKE_DOCS ALL DEPENDS MAKE_CLI_DOCS)
+  add_custom_target(CLI_MAKE_DOCS ALL DEPENDS MAKE_CLI_REF)
     
 endif()
 
