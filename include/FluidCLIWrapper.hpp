@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include <FluidVersion.hpp>
+
 #include <clients/common/FluidBaseClient.hpp>
 #include <clients/common/OfflineClient.hpp>
 #include <clients/common/ParameterSet.hpp>
@@ -12,6 +14,7 @@
 #include <cctype>
 #include <iostream>
 #include <iomanip>
+#include <regex>
 #include <string>
 #include <vector>
 #include <utility>
@@ -299,13 +302,23 @@ public:
     FlagsType flags;
       
     flags.fill(false);
-      
-    if (argc > 1 && (!strcmp(argv[1], "-h") || !strcmp(argv[1], "help")))
+    
+    const std::regex help("(-*)h(elp)?");
+    const std::regex version("(-*)v(ersion)?");
+    std::cmatch m;   
+    if (argc > 1 && std::regex_match(argv[1],m,help))      
     {
-      std::cout << "Fluid Decomposition Toolkit\nPart of the Fluid Corpus Manipulation Project - http:://www.flucoma.org/\n";
+      std::cout << "Fluid Corpus Manipulation Toolkit, version " << fluidVersion() << '\n';
+      std::cout << "Part of the Fluid Corpus Manipulation Project - http:://www.flucoma.org/\n";
       std::cout << "For a more detailed description of the available options than given below, please see the accompanying HTML documentation.\n"; 
       std::cout << "Call with these options:\n";
       descriptors().template iterate<Help>();
+      return 0;
+    }
+    
+    if (argc > 1 && std::regex_match(argv[1],m,version))
+    {
+      std::cout << "Fluid Corpus Manipulation Toolkit, version " << fluidVersion() << '\n';
       return 0;
     }
                             

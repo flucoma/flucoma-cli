@@ -6,6 +6,12 @@ target_link_libraries(${PROG}
   HISSTools_AudioFile
 )
 
+target_include_directories(
+  ${PROG}
+  PRIVATE 
+  "${FLUID_VERSION_PATH}"
+)
+
 set_target_properties(${PROG} 
     PROPERTIES
     CXX_STANDARD 14
