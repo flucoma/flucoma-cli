@@ -7,7 +7,9 @@
 1) copy the content of /bin wherever you fancy
 
 2) if you have not copied it in one of your /bin folders, add the path of where it is to your shell $PATH by typing:
-```export PATH="XXX:$PATH"```
+```
+export PATH="XXX:$PATH"
+```
 where XXX is the complete path to the folder that contains your FluCoMa-CLI apps.
 
 3) Use the CLI by entering the function and a full list of arguments, preceded with the hyphen (-). Default values are in place, but you need at least a source and destination paths. These need to be full paths.
@@ -34,3 +36,5 @@ will put on the desktop a single 5-channel audio file with the resynthesised 5 r
 - only outputs WAV 32bit float files for now.
 - do not support relative paths.
 - no man page yet: references needs to be taken from the provided documentation in /docs
+
+> This project has received funding from the European Research Council (ERC) under the European Union’s Horizon 2020 research and innovation programme (grant agreement No 725899).
