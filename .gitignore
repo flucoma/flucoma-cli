@@ -4,3 +4,4 @@ winbuild
 **/build/*
 **/.DS_Store
 release-packaging/
+docs
