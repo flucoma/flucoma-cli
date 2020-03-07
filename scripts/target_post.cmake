@@ -28,19 +28,19 @@ set_target_properties(${PROG}
 
 if (APPLE)
   #targeting <= 10.9, need to explicitly set libc++
-  target_compile_options(${PROG}  PRIVATE -stdlib=libc++)
+  target_compile_options(${PROG} PRIVATE -stdlib=libc++)
   target_link_libraries(${PROG} PRIVATE -stdlib=libc++)
 endif()
 
+#set AVX, or whatever
+if(DEFINED FLUID_ARCH)  
+    target_compile_options(${PROG} PRIVATE ${FLUID_ARCH})
+endif()
+
 if(MSVC)
-  target_compile_options(
-    ${PROG} PRIVATE $<$<NOT:$<CONFIG:DEBUG>>: /arch:AVX> -D_USE_MATH_DEFINES /W3
-  )
-  
+  target_compile_options(${PROG} PRIVATE  -D_USE_MATH_DEFINES /W3)
 else()
-  target_compile_options(  
-    ${PROG} PUBLIC $<$<NOT:$<CONFIG:DEBUG>>: -mavx>  -Wall -Wextra -Wpedantic  -Wno-c++11-narrowing 
-  )
+  target_compile_options(${PROG} PRIVATE -Wall -Wextra -Wpedantic -Wno-c++11-narrowing)
 endif(MSVC)
 
 set_target_properties(
