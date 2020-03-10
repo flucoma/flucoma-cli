@@ -239,7 +239,7 @@ class CLIWrapper
   template <size_t N>
   struct ValidateParams<N, N>
   {
-    ErrorType operator()(int& i, int argc, const char* argv[], FlagsType& flags)
+    ErrorType operator()(int&, int, const char*[], FlagsType&)
     {
       return kErrUnknownOption;
     }
