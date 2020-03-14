@@ -62,7 +62,12 @@ if(NOT fluid_decomposition_POPULATED)
   FetchContent_Populate(fluid_decomposition)
   add_subdirectory(${fluid_decomposition_SOURCE_DIR} ${fluid_decomposition_BINARY_DIR})
   include(flucoma_version)
+  include(flucoma-buildtools)
 endif()
+
+set_if_toplevel(VAR CMAKE_RUNTIME_OUTPUT_DIRECTORY 
+                TOPLEVEL "${CMAKE_CURRENT_SOURCE_DIR}/bin"
+              SUPERBUILD "${CMAKE_SOURCE_DIR}/cli_binaries/${CMAKE_HOST_SYSTEM_NAME}/${CMAKE_HOST_SYSTEM_PROCESSOR}")
 
 if(DOCS)
 
@@ -114,7 +119,7 @@ set(CLI_PACKAGE_ROOT ${CLI_INSTALL_PREFIX}/${FLUID_PACKAGE_NAME})
 
 # message(FATAL_ERROR ${CMAKE_INSTALL_PREFIX})
 
-install(DIRECTORY "${CMAKE_BINARY_DIR}/bin" DESTINATION ${CLI_PACKAGE_ROOT} USE_SOURCE_PERMISSIONS PATTERN "*.ilk" EXCLUDE PATTERN "*.PDB" EXCLUDE)
+install(DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ DESTINATION ${CLI_PACKAGE_ROOT}/bin USE_SOURCE_PERMISSIONS PATTERN "*.ilk" EXCLUDE PATTERN "*.PDB" EXCLUDE)
 
 install(FILES QuickStart.md DESTINATION ${CLI_PACKAGE_ROOT})
 install(FILES ${fluid_decomposition_SOURCE_DIR}/license-executableform.md DESTINATION ${CLI_PACKAGE_ROOT} RENAME license.md)
