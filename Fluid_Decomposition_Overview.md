@@ -1,6 +1,9 @@
-# fluid decomposition: play with sonic slices, layers and objects
+# Fluid Decomposition: play with sonic slices, layers and objects
 
-The Fluid Decomposition toolbox provides an open-ended, loosely coupled set of objects to break up and analyse sound in terms of slices (segments in time), layers (superositions in time and frequency) and objects (configurable or discoverable patterns in sound).
+The Fluid Decomposition toolbox provides an open-ended, loosely coupled set of objects to break up and analyse sound in terms of slices (segments in time), layers (superpositions in time and frequency) and objects (configurable or discoverable patterns in sound).
+
+## File Formats
+The programs can read audio in Wav or AIFF format, and write either audio or CSV files (determined by the extension given to the relevant argument).
 
 ## Slices
 #### ampslice
