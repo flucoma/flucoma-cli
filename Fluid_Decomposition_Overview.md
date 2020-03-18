@@ -3,49 +3,49 @@
 The Fluid Decomposition toolbox provides an open-ended, loosely coupled set of objects to break up and analyse sound in terms of slices (segments in time), layers (superositions in time and frequency) and objects (configurable or discoverable patterns in sound).
 
 ## Slices
-#### ampslice
+#### `fluid-ampslice` and `fluid-ampgate`
 Slice by amplitude envelope
 
-#### onsetslice
+#### `fluid-onsetslice`  
 Slice by onsets in the spectral domain
 
-#### noveltyslice
+#### `fluid-noveltyslice`  
 Slice by estimated novelty on a choice of features
 
-#### transientslice
+#### `fluid-transientslice`  
 Slice by transient modelling
 
 ## Layers
-#### sines
+#### `fluid-sines`  
 Decompose into sines + residual
 
-#### transients
+#### `fluid-transients`  
 Decompose into transients  + residual
 
-#### hpss
+#### `fluid-hpss`  
 Decompose into 'harmonic' and 'percussive' layers
 
 ## Objects
-#### nmf
+#### `fluid-nmf`  
 Use Nonnegative Matrix Factorisation to explore and decompose sounds
 
 ## Descriptors
-#### loudness
+#### `fluid-loudness`  
 Report amplitude and peak, or r128 loudness and true peak
 
-#### pitch
+#### `fluid-pitch`  
 A suite of pitch estimators
 
-#### melbands
+#### `fluid-melbands`  
 Energy across Mel bands
 
-#### mfcc
+#### `fluid-mfcc`  
 Mel Frequency Ceptstral Coefficients
 
-#### spectralshape
+#### `fluid-spectralshape`  
 Summary measures of spectral shape
 
-#### stats
+#### `fluid-stats`  
 Statistics of files
 
 
