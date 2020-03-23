@@ -47,7 +47,7 @@ public:
     {
       resize(file.getFrames(), file.getChannels(), file.getSamplingRate());
         
-      for (auto i = 0; i < file.getChannels(); i++)
+      for (uint16_t i = 0; i < file.getChannels(); i++)
       {
         file.seek();
         file.readChannel(getChannel(i), file.getFrames(), i);
@@ -81,11 +81,17 @@ public:
       constexpr auto fileType = HISSTools::BaseAudioFile::kAudioFileWAVE;
       constexpr auto depthType = HISSTools::BaseAudioFile::kAudioFileFloat32;
       
-      HISSTools::OAudioFile file(mPath, fileType, depthType, numChans(), mSamplingRate);
+      uint16_t chans = static_cast<uint16_t>(
+                          std::min(
+                            asSigned(std::numeric_limits<uint16_t>::max()),
+                            numChans())
+                      );
+      
+      HISSTools::OAudioFile file(mPath, fileType, depthType, chans, mSamplingRate);
       
       if (file.isOpen())
       {
-        for (auto i = 0; i < numChans(); i++)
+        for (uint16_t i = 0; i < numChans(); i++)
         {
           file.seek();
           file.writeChannel(getChannel(i), static_cast<uint32_t>(numFrames()), i);
@@ -203,7 +209,7 @@ class CLIWrapper
     bool testString(ConstString s, InputBufferT::type) { return s[0] != '-'; }
 
     template<typename T>
-    ErrorType checkValues(int& i, int argc, const char* argv[], index nArgs, T)
+    ErrorType checkValues(index& i, index argc, const char* argv[], index nArgs, T)
     {
       if (!(i + nArgs < argc))
         return kErrMissingVals;
@@ -216,7 +222,7 @@ class CLIWrapper
       return kErrNone;
     }
     
-    ErrorType operator()(int& i, int argc, const char* argv[], FlagsType& flags)
+    ErrorType operator()(index& i, index argc, const char* argv[], FlagsType& flags)
     {
       using T = typename ClientType::ParamDescType::template ParamType<N>;
       using ArgType = typename ParamLiteralConvertor<T, paramSize<N>()>::LiteralType;
@@ -239,7 +245,7 @@ class CLIWrapper
   template <size_t N>
   struct ValidateParams<N, N>
   {
-    ErrorType operator()(int&, int, const char*[], FlagsType&)
+    ErrorType operator()(index&, index, const char*[], FlagsType&)
     {
       return kErrUnknownOption;
     }
@@ -253,15 +259,15 @@ class CLIWrapper
     auto fromString(ConstString s, BufferT::type) { return BufferT::type(new CLIBufferAdaptor(s)); }
     auto fromString(ConstString s, InputBufferT::type) { return InputBufferT::type(new CLIBufferAdaptor(s)); }
 
-    typename T::type operator()(int argc, const char* argv[])
+    typename T::type operator()(index argc, const char* argv[])
     {
-      for (auto i = 0; i < argc; i++)
+      for (index i = 0; i < argc; ++i)
       {
         if (!strcmp(argv[i], optionName<N>().c_str()))
         {
           ParamLiteralConvertor<T, paramSize<N>()> a;
 
-          for (auto j = 0; j < paramSize<N>(); j++)
+          for (index j = 0; j < paramSize<N>(); ++j)
             a[j] = fromString(argv[i + j + 1], a[0]);
           
           return a.value();
@@ -305,11 +311,10 @@ public:
     std::cout << str1 << " " << str2 << "\n";
   }
     
-  static int run(int argc, const char* argv[])
+  static int run(index argc, const char* argv[])
   {
     ParamSetType params(descriptors());
     FlagsType flags;
-      
     flags.fill(false);
     
     const std::regex help("(-*)h(elp)?");
@@ -331,7 +336,7 @@ public:
       return 0;
     }
                             
-    for (int i = 1; i < argc; )
+    for (index i = 1; i < argc; )
     {
       switch (ValidateParams<nParams>()(i, argc, argv, flags))
       {
@@ -356,7 +361,7 @@ public:
     {
       // Output error
       
-      std::cout << result.message() << "\n";
+      std::cerr << result.message() << "\n";
     }
     else
     {
