@@ -22,12 +22,12 @@ hpss -source FULLPATHTOASOUND -harmonic ~/Desktop/harm.wav -percussive ~/Desktop
 will put on the Desktop 2 files from the default HPSS settings, and:
 
 ```
-nmf -source FULLPATHTOASOUND -rank 5 -resynth ~/Desktop/ranks.wav
+nmf -source FULLPATHTOASOUND -rank 5 -resynth ~/Desktop/components.wav
 ```
 
-will put on the desktop a single 5-channel audio file with the resynthesised 5 ranks requested.
+will put on the desktop a single 5-channel audio file with the resynthesised 5 components requested.
 
-4) an overview of the provided functions is available in the Fluid_Decomposition_Overview.md file, and an extensive documentation is available as a webpage in the /docs folder - add fluid.buf to a function.
+4) an overview of the provided functions is available in the Fluid_Decomposition_Overview.md file, and an extensive documentation is available as a webpage in the /docs folder
 
 #### Enjoy!
 
@@ -35,6 +35,6 @@ will put on the desktop a single 5-channel audio file with the resynthesised 5 r
 ## Known limitations:
 - only outputs WAV 32bit float files for now.
 - do not support relative paths.
-- no man page yet: references needs to be taken from the provided documentation in /docs
+- no man page yet: references needs to be taken from the provided documentation in /docs and only a one-liner description of parameters is provided with -h
 
 > This project has received funding from the European Research Council (ERC) under the European Union’s Horizon 2020 research and innovation programme (grant agreement No 725899).
