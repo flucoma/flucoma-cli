@@ -67,7 +67,8 @@ public:
 
       if (file.is_open())
       {
-        file << view;
+        file << std::setprecision(std::numeric_limits<float>::max_digits10)
+             << view;
         file.close();
       }
     }
