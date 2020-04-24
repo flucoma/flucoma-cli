@@ -16,6 +16,7 @@ This repository hosts code for generating the command line executables and docum
 ## Dependencies 
 
 These will be downloaded and configured automatically, unless you pass CMake a source code location on disk for each (see below): 
+
 * [Fluid Corpus Manipulation Library]()
 * [Eigen](https://gitlab.com/libeigen/eigen) (3.3.5)
 * [HISSTools Library](https://github.com/AlexHarker/HISSTools_Library)
@@ -35,7 +36,8 @@ This will assemble a package in `release-packaging`.
 
 An alternative to setting up / running CMake directly on the command line is to install the CMake GUI, or use to use the curses gui `ccmake`.
 
-Also, With CMake you have a choice of which build system you use.
+Also, with CMake you have a choice of which build system you use.
+
 * The default on macOS and Linux is `Unix Makefiles`. On macOS you can also use Xcode by passing `-GXcode` to CMake when you first run it.
 * The default on Windows is the latest version of Visual Studio installed. However, Visual Studio can open CMake files directly as projects, which has some upsides. When used this way, CMake variables have to be set via a JSON file that MSVC will use to configure CMake.
 
@@ -44,6 +46,7 @@ Also, With CMake you have a choice of which build system you use.
 The documentation partially relies on a system that is shard with other wrappers of the Fluid Corpus Manipulation Project for different creative coding environments.
 
 Pre-requisites: 
+
 * Python 3 
 * Docutils python package (ReST parsing)
 * Jinja python package (template engine)
@@ -56,12 +59,14 @@ cmake -DDOCS=ON ..
 Unless we pass the location on disk of the `flucoma_paramdump`, CMake will again take care of downloading this dependency.
 
 This process:
+
 * has only ever been tested on Mac, so may well not work at all on Windows
 * can sometimes produce spurious warnings in Xcode, but *should* work
 
 ## Using Manual Dependencies 
 
 In some cases you may want to use your own copies of the required libraries. Unless specified, the build system will download these automatically. To bypass this behaviour, use the following cache variables:
+
 *  `FLUID_PATH`: location of the Fluid Corpus Manipulation Library
 * `FLUID_PARAMDUMP_PATH`: location of `flucoma_paramdump` repository  (e.g. for debugging documentation generation)
 * `EIGEN_PATH` location of the Eigen library
@@ -79,4 +84,4 @@ The build system generally assumes an x86 cpu with AVX instructions (most modern
 
 --
 
-> This project has received funding from the European Research Council (ERC) under the European Union’s Horizon 2020 research and innovation programme (grant agreement No 725899).
+> This project has received funding from the European Research Council (ERC) under the European Union's Horizon 2020 research and innovation programme (grant agreement No 725899).
