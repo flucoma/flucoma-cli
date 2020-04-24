@@ -19,7 +19,7 @@ set(FLUID_PARAMDUMP_PATH "" CACHE PATH "Optional path to fluid_paramdump; will b
 if (APPLE)
 	set(CMAKE_OSX_ARCHITECTURES x86_64)
   set(CMAKE_XCODE_GENERATE_SCHEME ON)
-  set(CMAKE_OSX_DEPLOYMENT_TARGET 10.7)
+  set(CMAKE_OSX_DEPLOYMENT_TARGET 10.8)
 endif()
 
 project (flucoma-cli LANGUAGES CXX)
