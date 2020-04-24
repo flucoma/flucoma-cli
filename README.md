@@ -1,21 +1,21 @@
-# Fluid Corpus Manipulation: PD Objects Library
+# Fluid Corpus Manipulation: Command line interface
 
-This repository hosts code for generating the command line executables and documentation resources for the Fluid Corpus Manipulation Project. Much of the actual code that does the exciting stuff lives in this repository's principal dependency,  the [Fluid Corpus Manipulation Library](). 
+This repository hosts code for generating the command line executables and documentation resources for the Fluid Corpus Manipulation Project. Much of the actual code that does the exciting stuff lives in this repository's principal dependency,  the [Fluid Corpus Manipulation Library]().
 
-* A wrapper from our code to the PD API, that allows us to generate PD objects from a generic class. 
-* Stubs for producing PD objects for each 'client' in the Fluid Corpus Manipulation Library. 
-* CMake code for managing dependencies, building and packaging. 
+* A wrapper from our code that allows us to generate command-line executables from a generic class.
+* Stubs for producing an executable for each 'client' in the Fluid Corpus Manipulation Library.
+* CMake code for managing dependencies, building and packaging.
 
 # How to Build
 
 ## Pre-requisites
 
 * [CMake](http://cmake.org) >= 3.11
-* A C++ 14 compliant compiler for Mac or Windows (via XCode tools on Mac;  Visual Studio 17 >= 15.9 on Windows; GCC or clang on Linux)
+* A C++ 14 compliant compiler for macOS or Windows (via XCode tools on macOS;  Visual Studio 17 >= 15.9 on Windows; GCC or clang on Linux)
 
-## Dependencies 
+## Dependencies
 
-These will be downloaded and configured automatically, unless you pass CMake a source code location on disk for each (see below): 
+These will be downloaded and configured automatically, unless you pass CMake a source code location on disk for each (see below):
 
 * [Fluid Corpus Manipulation Library]()
 * [Eigen](https://gitlab.com/libeigen/eigen) (3.3.5)
@@ -23,31 +23,31 @@ These will be downloaded and configured automatically, unless you pass CMake a s
 
 ## I'm in a Hurry...
 
-...and you already have a development environment set up, understand CMake? And Python 3 + DocUtils + Jinja + PyYAML if you want docs? 
+...and you already have a development environment set up, understand CMake? And Python 3 + DocUtils + Jinja + PyYAML if you want docs?
 
-Cool: 
+Cool:
 
 ```
 cmake -DDOCS=<ON/OFF(default)> ..
 make install
 ```
 
-This will assemble a package in `release-packaging`. 
+This will assemble a package in `release-packaging`.
 
-An alternative to setting up / running CMake directly on the command line is to install the CMake GUI, or use to use the curses gui `ccmake`.
+An alternative to setting up / running CMake directly on the command line is to install the CMake GUI, or use to use the curses GUI `ccmake`.
 
 Also, with CMake you have a choice of which build system you use.
 
 * The default on macOS and Linux is `Unix Makefiles`. On macOS you can also use Xcode by passing `-GXcode` to CMake when you first run it.
 * The default on Windows is the latest version of Visual Studio installed. However, Visual Studio can open CMake files directly as projects, which has some upsides. When used this way, CMake variables have to be set via a JSON file that MSVC will use to configure CMake.
 
-## Generating Documentation 
+## Generating Documentation
 
-The documentation partially relies on a system that is shard with other wrappers of the Fluid Corpus Manipulation Project for different creative coding environments.
+There is an html manual associated with each of the command-line programs. This documentation partially relies on a system that is shared with other wrappers of the Fluid Corpus Manipulation Project for different creative coding environments.
 
-Pre-requisites: 
+Pre-requisites:
 
-* Python 3 
+* Python 3
 * Docutils python package (ReST parsing)
 * Jinja python package (template engine)
 * PyYAML >= 5.1 (YAML parsing)
@@ -63,11 +63,11 @@ This process:
 * has only ever been tested on Mac, so may well not work at all on Windows
 * can sometimes produce spurious warnings in Xcode, but *should* work
 
-## Using Manual Dependencies 
+## Using Manual Dependencies
 
 In some cases you may want to use your own copies of the required libraries. Unless specified, the build system will download these automatically. To bypass this behaviour, use the following cache variables:
 
-*  `FLUID_PATH`: location of the Fluid Corpus Manipulation Library
+* `FLUID_PATH`: location of the Fluid Corpus Manipulation Library
 * `FLUID_PARAMDUMP_PATH`: location of `flucoma_paramdump` repository  (e.g. for debugging documentation generation)
 * `EIGEN_PATH` location of the Eigen library
 * `HISS_PATH` location of the HISSTools library
@@ -77,7 +77,7 @@ For example, use this to us your own copy of the Fluid Corpus Manipulation Libra
 ```
 cmake -DFLUID_PATH=<location of Fluid Corpus Manipulation Library> ..
 ```
-To find out which branches / tags / commits of these we use, look in the top level `CMakeLists.txt` of the  Fluid Corpus Manipulation Library for the `FetchContent_Declare` statements for each dependency. 
+To find out which branches / tags / commits of these we use, look in the top level `CMakeLists.txt` of the  Fluid Corpus Manipulation Library for the `FetchContent_Declare` statements for each dependency.
 
 ## Compiling for different CPUs
 The build system generally assumes an x86 cpu with AVX instructions (most modern x86 CPUs). To build on another kind of CPU (e.g. older than 2012) you can use the `FLUID_ARCH` cache variable to pass specific flags to your compiler. For example use `-DFLUID_ARCH=-mnative` to optimize for your particular CPU.
