@@ -11,10 +11,10 @@ cmake_minimum_required(VERSION 3.11)
 set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/release-packaging" CACHE PATH "")
 # message(FATAL_ERROR ${CMAKE_INSTALL_PREFIX})
 
-set(FLUID_PATH "" CACHE PATH "Optional path to the Fluid Decomposition repo; will be downloaded if absent")
+set(FLUID_PATH "" CACHE PATH "Optional path to the flucoma-core repo; will be downloaded if absent")
 # set(FLUID_M_PATH "" CACHE PATH "Optional path to the Fluid fluid_manipulation repo")
 option(DOCS "Generate HTML documentaiton" OFF)
-set(FLUID_PARAMDUMP_PATH "" CACHE PATH "Optional path to fluid_paramdump; will be downloaded if absent")
+set(FLUID_DOCS_PATH "" CACHE PATH "Optional path to flucoma-docs; will be downloaded if absent")
 
 if (APPLE)
 	set(CMAKE_OSX_ARCHITECTURES x86_64)
@@ -40,27 +40,27 @@ ENDMACRO()
 include(FetchContent)
 
 FetchContent_Declare(
-  fluid_decomposition
-  GIT_REPOSITORY https://bitbucket.org/flucoma/fluid_decomposition.git
+  flucoma-core
+  GIT_REPOSITORY https://github.com/flucoma/flucoma-core.git
   GIT_PROGRESS TRUE
 )
 
 FetchContent_Declare(
-  fluid_paramdump
-  GIT_REPOSITORY https://bitbucket.org/flucoma/fluid_paramdump.git
+  flucoma-docs
+  GIT_REPOSITORY https://github.com/flucoma/flucoma-docs.git
   GIT_PROGRESS TRUE
 )
 
 if(FLUID_PATH)
   get_filename_component(
-    FETCHCONTENT_SOURCE_DIR_FLUID_DECOMPOSITION ${FLUID_PATH} ABSOLUTE
+    FETCHCONTENT_SOURCE_DIR_FLUCOMA-CORE ${FLUID_PATH} ABSOLUTE
   )
 endif()
 
-FetchContent_GetProperties(fluid_decomposition)
-if(NOT fluid_decomposition_POPULATED)
-  FetchContent_Populate(fluid_decomposition)
-  add_subdirectory(${fluid_decomposition_SOURCE_DIR} ${fluid_decomposition_BINARY_DIR})
+FetchContent_GetProperties(flucoma-core)
+if(NOT flucoma-core_POPULATED)
+  FetchContent_Populate(flucoma-core)
+  add_subdirectory(${flucoma-core_SOURCE_DIR} ${flucoma-core_BINARY_DIR})
   include(flucoma_version)
   include(flucoma-buildtools)
 endif()
@@ -71,18 +71,18 @@ set_if_toplevel(VAR FLUCOMA_CLI_RUNTIME_OUTPUT_DIRECTORY
 
 if(DOCS)
 
-  if(FLUID_PARAMDUMP_PATH)
+  if(FLUID_DOCS_PATH)
     get_filename_component(
-      FETCHCONTENT_SOURCE_DIR_FLUID_PARAMDUMP ${FLUID_PARAMDUMP_PATH} ABSOLUTE
+      FETCHCONTENT_SOURCE_DIR_FLUCOMA-DOCS ${FLUID_DOCS_PATH} ABSOLUTE
     )
   endif()
 
-  FetchContent_GetProperties(fluid_paramdump)
-  if(NOT fluid_paramdump_POPULATED)
-    FetchContent_Populate(fluid_paramdump)
-    file(GLOB_RECURSE DOC_SOURCE RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${fluid_paramdump_SOURCE_DIR}/**/*.cpp" )
+  FetchContent_GetProperties(flucoma-docs)
+  if(NOT flucoma-docs_POPULATED)
+    FetchContent_Populate(flucoma-docs)
+    file(GLOB_RECURSE DOC_SOURCE RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${flucoma-docs_SOURCE_DIR}/**/*.cpp" )
     source_group("\\XML Doc Gen" FILES ${DOC_SOURCE})
-    add_subdirectory(${fluid_paramdump_SOURCE_DIR} ${fluid_paramdump_BINARY_DIR})
+    add_subdirectory(${flucoma-docs_SOURCE_DIR} ${flucoma-docs_BINARY_DIR})
   endif()
 
   add_custom_target(CLI_MAKE_DOCS ALL DEPENDS MAKE_CLI_REF)
@@ -117,12 +117,17 @@ set(CLI_INSTALL_PREFIX "." CACHE PATH "Prefix for assembling PD packages")
 set(FLUID_PACKAGE_NAME FluidCorpusManipulation CACHE STRING "Name for published package")
 set(CLI_PACKAGE_ROOT ${CLI_INSTALL_PREFIX}/${FLUID_PACKAGE_NAME})
 
-# message(FATAL_ERROR ${CMAKE_INSTALL_PREFIX})
-
-install(DIRECTORY ${FLUCOMA_CLI_RUNTIME_OUTPUT_DIRECTORY}/ DESTINATION ${CLI_PACKAGE_ROOT}/bin USE_SOURCE_PERMISSIONS PATTERN "*.ilk" EXCLUDE PATTERN "*.PDB" EXCLUDE)
+install(DIRECTORY ${FLUCOMA_CLI_RUNTIME_OUTPUT_DIRECTORY}/ 
+				DESTINATION ${CLI_PACKAGE_ROOT}/bin 
+				USE_SOURCE_PERMISSIONS 
+				PATTERN "*.ilk" EXCLUDE 
+				PATTERN "*.PDB" EXCLUDE)
 
 install(FILES QuickStart.md DESTINATION ${CLI_PACKAGE_ROOT})
-install(FILES ${fluid_decomposition_SOURCE_DIR}/distribution.lic DESTINATION ${CLI_PACKAGE_ROOT} RENAME LICENSE.md)
+install(FILES ${flucoma-core_SOURCE_DIR}/distribution.lic 
+				DESTINATION ${CLI_PACKAGE_ROOT} RENAME LICENSE.md)
 if(DOCS)
-  install(DIRECTORY "${FLUID_CLI_REF_PATH}/" DESTINATION "${CLI_PACKAGE_ROOT}/docs" FILES_MATCHING REGEX "\\.(html|css)")
+  install(DIRECTORY "${FLUID_CLI_REF_PATH}/" 
+				  DESTINATION "${CLI_PACKAGE_ROOT}/docs" 
+					FILES_MATCHING REGEX "\\.(html|css)")
 endif()

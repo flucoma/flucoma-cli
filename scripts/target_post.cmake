@@ -63,4 +63,4 @@ set_target_properties(
 )
 
 get_property(HEADERS TARGET FLUID_DECOMPOSITION PROPERTY INTERFACE_SOURCES)
-source_group(TREE "${fluid_decomposition_SOURCE_DIR}/include" FILES ${HEADERS})
+source_group(TREE "${flucoma-core_SOURCE_DIR}/include" FILES ${HEADERS})
