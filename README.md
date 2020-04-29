@@ -28,6 +28,7 @@ These will be downloaded and configured automatically, unless you pass CMake a s
 Cool:
 
 ```
+mkdir -p build && cd build
 cmake -DDOCS=<ON/OFF(default)> ..
 make install
 ```
