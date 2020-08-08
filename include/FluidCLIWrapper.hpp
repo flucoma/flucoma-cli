@@ -392,18 +392,34 @@ public:
     // Create client after all parameters are set
     FluidContext context;
     ClientType   client(params);
-    auto         result = client.process(context);
+    Result result;
+    using namespace std::chrono_literals;
+
+    client.process();
+    ProcessState state = client.checkProgress(result);
+    double progress = 0.0; // Variable to store progress
+
+    while(true) 
+    {
+        if (state == ProcessState::kDone || state == ProcessState::kDoneStillProcessing) {
+          break;
+        }
+        if (state != ProcessState::kDone) {
+          if (client.progress() - progress >=1) std::cout << client.progress() << "\n";
+          progress = client.progress();
+          std::this_thread::sleep_for(20ms); 
+          continue; 
+        }
+    }
 
     if (!result.ok())
     {
       // Output error
-
       std::cerr << result.message() << "\n";
     }
     else
     {
       // Write files
-
       bool allowCSV = true;
       params.template forEachParamType<BufferT, WriteFiles>(allowCSV);
     }
