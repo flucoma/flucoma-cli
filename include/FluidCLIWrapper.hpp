@@ -18,10 +18,12 @@ under the European Union’s Horizon 2020 research and innovation programme
 #include <clients/common/ParameterTypes.hpp>
 #include <FluidVersion.hpp>
 #include <cctype>
+#include <chrono>
 #include <iomanip>
 #include <iostream>
 #include <regex>
 #include <string>
+#include <thread>
 #include <utility>
 #include <vector>
 
