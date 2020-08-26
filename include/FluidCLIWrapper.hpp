@@ -390,23 +390,32 @@ public:
     params.constrainParameterValues();
 
     // Create client after all parameters are set
-    FluidContext context;
+        // Create client after all parameters are set
     ClientType   client(params);
     Result result;
-    using namespace std::chrono_literals;
 
-    client.process();
-    ProcessState state = client.checkProgress(result);
+    client.enqueue(params);
+    result = client.process();
+    
     double progress = 0.0; // Variable to store progress
 
-    while(true) 
+    while(result.ok())
     {
+        ProcessState state = client.checkProgress(result);
+      
         if (state == ProcessState::kDone || state == ProcessState::kDoneStillProcessing) {
+          std::cout << '\n';
           break;
         }
         if (state != ProcessState::kDone) {
-          if (client.progress() - progress >=1) std::cout << client.progress() << "\n";
-          progress = client.progress();
+          double newProgress = client.progress();
+          if (newProgress - progress >=0.01)
+          {
+            std::cout << newProgress << '\r' << std::flush;
+            
+            progress = newProgress;
+          }
+          using namespace std::chrono_literals;
           std::this_thread::sleep_for(20ms); 
           continue; 
         }
@@ -430,3 +439,5 @@ public:
 
 } // namespace client
 } // namespace fluid
+
+
