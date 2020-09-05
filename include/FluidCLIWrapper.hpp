@@ -18,10 +18,12 @@ under the European Union’s Horizon 2020 research and innovation programme
 #include <clients/common/ParameterTypes.hpp>
 #include <FluidVersion.hpp>
 #include <cctype>
+#include <chrono>
 #include <iomanip>
 #include <iostream>
 #include <regex>
 #include <string>
+#include <thread>
 #include <utility>
 #include <vector>
 
@@ -388,20 +390,45 @@ public:
     params.constrainParameterValues();
 
     // Create client after all parameters are set
-    FluidContext context;
+        // Create client after all parameters are set
     ClientType   client(params);
-    auto         result = client.process(context);
+    Result result;
+
+    client.enqueue(params);
+    result = client.process();
+    
+    double progress = 0.0; // Variable to store progress
+
+    while(result.ok())
+    {
+        ProcessState state = client.checkProgress(result);
+      
+        if (state == ProcessState::kDone || state == ProcessState::kDoneStillProcessing) {
+          std::cout << '\n';
+          break;
+        }
+        if (state != ProcessState::kDone) {
+          double newProgress = client.progress();
+          if (newProgress - progress >=0.01)
+          {
+            std::cout << newProgress << '\r' << std::flush;
+            
+            progress = newProgress;
+          }
+          using namespace std::chrono_literals;
+          std::this_thread::sleep_for(20ms); 
+          continue; 
+        }
+    }
 
     if (!result.ok())
     {
       // Output error
-
       std::cerr << result.message() << "\n";
     }
     else
     {
       // Write files
-
       bool allowCSV = true;
       params.template forEachParamType<BufferT, WriteFiles>(allowCSV);
     }
@@ -412,3 +439,5 @@ public:
 
 } // namespace client
 } // namespace fluid
+
+

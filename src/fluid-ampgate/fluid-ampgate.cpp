@@ -15,5 +15,5 @@ under the European Union’s Horizon 2020 research and innovation programme
 int main(int argc, const char* argv[])
 {
   using namespace fluid::client;
-  return CLIWrapper<NRTAmpGateClient>::run(argc, argv);
+  return CLIWrapper<NRTThreadedAmpGateClient>::run(argc, argv);
 }
