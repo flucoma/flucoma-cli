@@ -42,6 +42,13 @@ Also, with CMake you have a choice of which build system you use.
 * The default on macOS and Linux is `Unix Makefiles`. On macOS you can also use Xcode by passing `-GXcode` to CMake when you first run it.
 * The default on Windows is the latest version of Visual Studio installed. However, Visual Studio can open CMake files directly as projects, which has some upsides. When used this way, CMake variables have to be set via a JSON file that MSVC will use to configure CMake.
 
+Alternatively, flucoma-cli is now on the [AUR / Arch User Repository](https://aur.archlinux.org/packages/flucoma-cli-git/) and can now be compiled and downloaded by executing:
+```bash
+yay -S flucoma-cli-git
+```
+on Arch Linux and Manjaro (with thanks to @madskjeldgaard)
+
+
 ## Generating Documentation
 
 There is an html manual associated with each of the command-line programs. This documentation partially relies on a system that is shared with other wrappers of the Fluid Corpus Manipulation Project for different creative coding environments.
