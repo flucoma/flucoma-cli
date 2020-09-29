@@ -34,7 +34,8 @@ will put on the desktop a single 5-channel audio file with the resynthesised 5 c
 
 ## Known limitations:
 - only outputs WAV 32bit float files for now.
-- do not support relative paths.
+- can't currently read some .wav files (with a WAVE EXTENSIBLE header)
+- does not support relative paths.
 - no man page yet: references needs to be taken from the provided documentation in /docs and only a one-liner description of parameters is provided with -h
 
 > This project has received funding from the European Research Council (ERC) under the European Union’s Horizon 2020 research and innovation programme (grant agreement No 725899).
