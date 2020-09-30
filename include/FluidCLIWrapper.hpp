@@ -47,11 +47,8 @@ public:
     {
       resize(file.getFrames(), file.getChannels(), file.getSamplingRate());
 
-      for (uint16_t i = 0; i < file.getChannels(); i++)
-      {
-        file.seek();
-        file.readInterleaved(mData.data(),file.getFrames());
-      }
+      file.seek();
+      file.readInterleaved(mData.data(),file.getFrames());
     }
   }
 
@@ -96,11 +93,8 @@ public:
 
       if (file.isOpen())
       {
-        for (uint16_t i = 0; i < numChans(); i++)
-        {
-          file.seek();
-          file.writeInterleaved(mData.data(), static_cast<uint32_t>(numFrames())); 
-        }
+        file.seek();
+        file.writeInterleaved(mData.data(), static_cast<uint32_t>(numFrames()));
         
         if(file.getIsError())
         {
