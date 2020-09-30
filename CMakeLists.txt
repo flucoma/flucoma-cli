@@ -63,6 +63,7 @@ if(NOT flucoma-core_POPULATED)
   add_subdirectory(${flucoma-core_SOURCE_DIR} ${flucoma-core_BINARY_DIR})
   include(flucoma_version)
   include(flucoma-buildtools)
+	include(flucoma-buildtype)
 endif()
 
 set_if_toplevel(VAR FLUCOMA_CLI_RUNTIME_OUTPUT_DIRECTORY 

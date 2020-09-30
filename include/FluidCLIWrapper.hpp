@@ -40,7 +40,9 @@ public:
     // TODO: only read if needed!...
 
     HISSTools::IAudioFile file(mPath);
-
+  
+    mReadError = file.getErrorFlags();
+  
     if (file.isOpen())
     {
       resize(file.getFrames(), file.getChannels(), file.getSamplingRate());
@@ -48,12 +50,12 @@ public:
       for (uint16_t i = 0; i < file.getChannels(); i++)
       {
         file.seek();
-        file.readChannel(getChannel(i), file.getFrames(), i);
+        file.readInterleaved(mData.data(),file.getFrames());
       }
     }
   }
 
-  void write(bool allowCSV)
+  void write(bool allowCSV, bool& result)
   {
     if (!numFrames()) return;
 
@@ -72,6 +74,11 @@ public:
         file << std::setprecision(std::numeric_limits<float>::max_digits10)
              << view;
         file.close();
+      }
+      else
+      {
+        result = false;
+        std::cerr << "Could not open file " << mPath << " for writing\n";
       }
     }
     else
@@ -92,12 +99,24 @@ public:
         for (uint16_t i = 0; i < numChans(); i++)
         {
           file.seek();
-          file.writeChannel(getChannel(i), static_cast<uint32_t>(numFrames()),
-                            i);
+          file.writeInterleaved(mData.data(), static_cast<uint32_t>(numFrames())); 
         }
+        
+        if(file.getIsError())
+        {
+          result = false;
+          for(auto&& e:file.getErrors()) std::cerr << HISSTools::BaseAudioFile::getErrorString(e) << '\n';
+        }
+      }
+      else
+      {
+        result = false;
+        std::cerr << "Could not open file " << mPath << " for writing\n";
       }
     }
   }
+  
+  int readError() const { return mReadError; }
 
 private:
   bool acquire() const override { return !mAcquired && (mAcquired = true); }
@@ -119,50 +138,45 @@ private:
 
   const Result resize(index frames, index channels, double sampleRate) override
   {
-    std::vector<std::vector<float>> newData;
-
     mNumChans = channels;
-    mData.resize(channels * frames);
+    mData.resize(frames,channels);
     mSamplingRate = sampleRate;
     return {};
   }
 
   fluid::FluidTensorView<float, 1> samps(index channel) override
   {
-    return {getChannel(channel), 0, numFrames()};
+      return mData.col(channel); 
   }
 
   fluid::FluidTensorView<float, 1> samps(index offset, index nframes,
                                          index chanoffset) override
   {
-    index length = offset > numFrames() ? 0 : numFrames() - offset;
-    return {getChannel(chanoffset) + offset, 0, std::min(length, nframes)};
+      return mData(Slice(offset, nframes), Slice(chanoffset, 1)).col(0);
   }
 
   fluid::FluidTensorView<const float, 1> samps(index channel) const override
   {
-    return fluid::FluidTensorView<const float, 1>{getChannel(channel), 0,
-                                                  numFrames()};
+      return mData.col(channel);
   }
 
   fluid::FluidTensorView<const float, 1> samps(index offset, index nframes,
                                                index chanoffset) const override
   {
-    index length = offset > numFrames() ? 0 : numFrames() - offset;
-    return fluid::FluidTensorView<const float, 1>{
-        getChannel(chanoffset) + offset, 0, std::min(length, nframes)};
+      return mData(Slice(offset, nframes), Slice(chanoffset, 1)).col(0);
   }
 
-  index numFrames() const override { return mData.size() / mNumChans; }
-  index numChans() const override { return mNumChans; }
+  index numFrames() const override { return mData.rows(); }
+  index numChans() const override { return mData.cols(); }
 
   std::string asString() const override { return mPath; }
 
-  std::string        mPath;
-  mutable bool       mAcquired;
-  double             mSamplingRate = 44100.0;
-  index              mNumChans;
-  std::vector<float> mData;
+  std::string          mPath;
+  mutable bool         mAcquired;
+  double               mSamplingRate = 44100.0;
+  index                mNumChans;
+  FluidTensor<float,2> mData;
+  int                  mReadError;
 };
 
 template <template <typename T> class Client>
@@ -323,11 +337,32 @@ class CLIWrapper
   template <size_t N, typename T>
   struct WriteFiles
   {
-    void operator()(typename T::type& param, bool allowCSV)
+    void operator()(typename T::type& param, bool allowCSV, bool& result)
     {
-      if (param) static_cast<CLIBufferAdaptor*>(param.get())->write(allowCSV);
+      if (param) static_cast<CLIBufferAdaptor*>(param.get())->write(allowCSV, result);
     }
   };
+  
+  template <size_t N, typename T>
+  struct CheckRead
+  {
+    void operator()(typename T::type& param, bool& result)
+    {
+      if(param)
+      {
+        const CLIBufferAdaptor* ifile = static_cast<const CLIBufferAdaptor*>(param.get());
+        if(ifile->readError())
+        {
+          std::cout << ifile->readError() << '\n'; 
+          using Audio = HISSTools::BaseAudioFile;
+          result = false;
+          std::vector<Audio::Error> errors = Audio::extractErrorsFromFlags(ifile->readError());
+          for(auto&& e:errors) std::cerr << Audio::getErrorString(e) << '\n';
+        }
+      }
+    }
+  };
+  
 
 public:
   static void report(const char* str1, const char* str2)
@@ -388,6 +423,10 @@ public:
 
     params.template setParameterValues<Setter>(false, argc, argv);
     params.constrainParameterValues();
+    
+    bool readSuccess{true};
+    params.template forEachParamType<InputBufferT, CheckRead>(readSuccess);
+    if(!readSuccess) return -1; 
 
     // Create client after all parameters are set
         // Create client after all parameters are set
@@ -430,7 +469,9 @@ public:
     {
       // Write files
       bool allowCSV = true;
-      params.template forEachParamType<BufferT, WriteFiles>(allowCSV);
+      bool fileWriteResult = true;
+      params.template forEachParamType<BufferT, WriteFiles>(allowCSV, fileWriteResult);
+      if(!fileWriteResult) return -1; 
     }
 
     return result.ok() ? 0 : -1;
