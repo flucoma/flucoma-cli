@@ -38,7 +38,9 @@ public:
     // TODO: only read if needed!...
 
     HISSTools::IAudioFile file(mPath);
-
+  
+    mReadError = file.getErrorFlags();
+  
     if (file.isOpen())
     {
       resize(file.getFrames(), file.getChannels(), file.getSamplingRate());
@@ -51,7 +53,7 @@ public:
     }
   }
 
-  void write(bool allowCSV)
+  void write(bool allowCSV, bool& result)
   {
     if (!numFrames()) return;
 
@@ -70,6 +72,11 @@ public:
         file << std::setprecision(std::numeric_limits<float>::max_digits10)
              << view;
         file.close();
+      }
+      else
+      {
+        result = false;
+        std::cerr << "Could not open file " << mPath << " for writing\n";
       }
     }
     else
@@ -93,9 +100,22 @@ public:
           file.writeChannel(getChannel(i), static_cast<uint32_t>(numFrames()),
                             i);
         }
+        
+        if(file.getIsError())
+        {
+          result = false;
+          for(auto&& e:file.getErrors()) std::cerr << HISSTools::BaseAudioFile::getErrorString(e) << '\n';
+        }
+      }
+      else
+      {
+        result = false;
+        std::cerr << "Could not open file " << mPath << " for writing\n";
       }
     }
   }
+  
+  int readError() const { return mReadError; }
 
 private:
   bool acquire() const override { return !mAcquired && (mAcquired = true); }
@@ -161,6 +181,7 @@ private:
   double             mSamplingRate = 44100.0;
   index              mNumChans;
   std::vector<float> mData;
+  int                mReadError;
 };
 
 template <template <typename T> class Client>
@@ -321,11 +342,32 @@ class CLIWrapper
   template <size_t N, typename T>
   struct WriteFiles
   {
-    void operator()(typename T::type& param, bool allowCSV)
+    void operator()(typename T::type& param, bool allowCSV, bool& result)
     {
-      if (param) static_cast<CLIBufferAdaptor*>(param.get())->write(allowCSV);
+      if (param) static_cast<CLIBufferAdaptor*>(param.get())->write(allowCSV, result);
     }
   };
+  
+  template <size_t N, typename T>
+  struct CheckRead
+  {
+    void operator()(typename T::type& param, bool& result)
+    {
+      if(param)
+      {
+        const CLIBufferAdaptor* ifile = static_cast<const CLIBufferAdaptor*>(param.get());
+        if(ifile->readError())
+        {
+          std::cout << ifile->readError() << '\n'; 
+          using Audio = HISSTools::BaseAudioFile;
+          result = false;
+          std::vector<Audio::Error> errors = Audio::extractErrorsFromFlags(ifile->readError());
+          for(auto&& e:errors) std::cerr << Audio::getErrorString(e) << '\n';
+        }
+      }
+    }
+  };
+  
 
 public:
   static void report(const char* str1, const char* str2)
@@ -386,6 +428,10 @@ public:
 
     params.template setParameterValues<Setter>(false, argc, argv);
     params.constrainParameterValues();
+    
+    bool readSuccess{true};
+    params.template forEachParamType<InputBufferT, CheckRead>(readSuccess);
+    if(!readSuccess) return -1; 
 
     // Create client after all parameters are set
     FluidContext context;
@@ -403,7 +449,9 @@ public:
       // Write files
 
       bool allowCSV = true;
-      params.template forEachParamType<BufferT, WriteFiles>(allowCSV);
+      bool fileWriteResult = true;
+      params.template forEachParamType<BufferT, WriteFiles>(allowCSV, fileWriteResult);
+      if(!fileWriteResult) return -1; 
     }
 
     return result.ok() ? 0 : -1;
