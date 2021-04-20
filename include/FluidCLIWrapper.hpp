@@ -18,10 +18,12 @@ under the European Union’s Horizon 2020 research and innovation programme
 #include <clients/common/ParameterTypes.hpp>
 #include <FluidVersion.hpp>
 #include <cctype>
+#include <chrono>
 #include <iomanip>
 #include <iostream>
 #include <regex>
 #include <string>
+#include <thread>
 #include <utility>
 #include <vector>
 
@@ -44,7 +46,6 @@ public:
     if (file.isOpen())
     {
       resize(file.getFrames(), file.getChannels(), file.getSamplingRate());
-
       file.seek();
       file.readInterleaved(mData.data(),file.getFrames());
     }
@@ -86,11 +87,12 @@ public:
       uint16_t chans = static_cast<uint16_t>(
           std::min(asSigned(std::numeric_limits<uint16_t>::max()), numChans()));
 
-      HISSTools::OAudioFile file(mPath, fileType, depthType, chans,
+        HISSTools::OAudioFile file(mPath, fileType, depthType, chans,
                                  mSamplingRate);
 
       if (file.isOpen())
       {
+        std::cout << "Writing " << mPath << '\n';
         file.seek();
         file.writeInterleaved(mData.data(), static_cast<uint32_t>(numFrames()));
         
@@ -421,20 +423,46 @@ public:
     if(!readSuccess) return -1; 
 
     // Create client after all parameters are set
-    FluidContext context;
+
     ClientType   client(params);
-    auto         result = client.process(context);
+    Result result;
+
+    client.enqueue(params);
+    result = client.process();
+    
+    double progress = 0.0;
+
+    while(result.ok())
+    {
+        ProcessState state = client.checkProgress(result);
+      
+        if (state == ProcessState::kDone || state == ProcessState::kDoneStillProcessing) {
+          std::cout << "100%\n";
+          break;
+        }
+        if (state != ProcessState::kDone) {
+          double newProgress = client.progress();
+          if (newProgress - progress >=0.01)
+          {
+            std::cout << std::setw(3)  << static_cast<int>(100 * newProgress) << "%\r" << std::flush;
+            progress = newProgress;
+          }
+          using namespace std::chrono_literals;
+          std::this_thread::sleep_for(20ms); 
+          continue; 
+        }
+    }
 
     if (!result.ok())
     {
       // Output error
-
+      
       std::cerr << result.message() << "\n";
     }
     else
     {
       // Write files
-
+      
       bool allowCSV = true;
       bool fileWriteResult = true;
       params.template forEachParamType<BufferT, WriteFiles>(allowCSV, fileWriteResult);
