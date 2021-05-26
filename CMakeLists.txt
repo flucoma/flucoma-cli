@@ -108,6 +108,10 @@ target_sources(FLUID_CLI_WRAPPER
   "${CMAKE_CURRENT_SOURCE_DIR}/include/FluidCLIWrapper.hpp"
 )
 
+find_package (Threads REQUIRED)
+set(THREADS_PREFER_PTHREAD_FLAG TRUE) 
+target_link_libraries (FLUID_CLI_WRAPPER INTERFACE Threads::Threads)
+
 SUBDIRLIST(PROJECT_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src)
 foreach (project_dir ${PROJECT_DIRS})
 	if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/${project_dir}/CMakeLists.txt")
