@@ -60,15 +60,14 @@ public:
     if (allowCSV && (pathLength > 4) &&
         !mPath.compare(pathLength - 4, 4, ".csv"))
     {
-      FluidTensorView<const float, 2> view{mData.data(), 0, numChans(),
-                                           numFrames()};
-
+      FluidTensorView<const float, 2> view{mData.data(), 0, numFrames(),
+                                           numChans()};                         
       std::ofstream file(mPath.c_str());
 
       if (file.is_open())
       {
         file << std::setprecision(std::numeric_limits<float>::max_digits10)
-             << view;
+             << view.transpose();
         file.close();
       }
       else
