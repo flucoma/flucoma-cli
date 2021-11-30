@@ -61,10 +61,10 @@ jobs:
         run: tar -cvzf FluCoMa-CLI-Mac.tar.gz FluidCorpusManipulation
         working-directory: release-packaging
       
-        - uses: actions/upload-artifact@v2
-          with:
-            name: macbuild
-            path: release-packaging/FluCoMa-CLI-Mac.tar.gz
+      - uses: actions/upload-artifact@v2
+        with:
+          name: macbuild
+          path: release-packaging/FluCoMa-CLI-Mac.tar.gz
 
   linux:
     runs-on: ubuntu-18.04
