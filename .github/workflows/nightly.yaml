@@ -25,14 +25,17 @@ jobs:
       run: cmake --build . --target install --config Release
       working-directory: build
 
+    # - name: compress release
+    #   run: tar -cvzf FluCoMa-CLI-Windows.tar.gz FluidCorpusManipulation
+    #   working-directory: release-packaging 
+
     - name: compress release
-      run: tar -cvzf FluCoMa-CLI-Windows.tar.gz FluidCorpusManipulation
-      working-directory: release-packaging 
+      run: Compress-Archive release-packaging/FluidCorpusManipulation FluCoMa-CLI-Windows.zip
 
     - uses: actions/upload-artifact@v2
       with:
         name: winbuild
-        path: release-packaging/FluCoMa-CLI-Windows.tar.gz
+        path: release-packaging/FluCoMa-CLI-Windows-nightly.zip
   
   macos:
     runs-on: macos-11
@@ -57,14 +60,18 @@ jobs:
         run: ninja install
         working-directory: build
       
+      # - name: compress release
+      #   run: tar -cvzf FluCoMa-CLI-Mac.tar.gz FluidCorpusManipulation
+      #   working-directory: release-packaging
+
       - name: compress release
-        run: tar -cvzf FluCoMa-CLI-Mac.tar.gz FluidCorpusManipulation
+        run: zip -r ../FluCoMa-CLI-Mac-nightly.zip FluidCorpusManipulation
         working-directory: release-packaging
       
       - uses: actions/upload-artifact@v2
         with:
           name: macbuild
-          path: release-packaging/FluCoMa-CLI-Mac.tar.gz
+          path: release-packaging/FluCoMa-CLI-Mac-nightly.zip
 
   linux:
     runs-on: ubuntu-18.04
@@ -90,13 +97,13 @@ jobs:
         working-directory: build
 
       - name: compress release
-        run: tar -cvzf FluCoMa-CLI-Linux.tar.gz FluidCorpusManipulation
-        working-directory: release-packaging 
+        run: zip -r ../FluCoMa-CLI-Linux-nightly.zip FluidCorpusManipulation
+        working-directory: release-packaging
 
       - uses: actions/upload-artifact@v2
         with:
           name: linuxbuild
-          path: release-packaging/FluCoMa-CLI-Linux.tar.gz
+          path: release-packaging/FluCoMa-CLI-Linux-nightly.zip
   
   
   release:
@@ -107,17 +114,17 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: linuxbuild
-          path: FluCoMa-CLI-Linux.tar.gz
+          path: FluCoMa-CLI-Linux-nightly.zip
 
       - uses: actions/download-artifact@v2
         with:
           name: macbuild
-          path: FluCoMa-CLI-Mac.tar.gz
+          path: FluCoMa-CLI-Mac-nightly.zip
 
       - uses: actions/download-artifact@v2
         with:
           name: winbuild
-          path: FluCoMa-CLI-Windows.tar.gz
+          path: FluCoMa-CLI-Windows-nightly.zip
 
       - name: ls
         run: ls
@@ -136,7 +143,7 @@ jobs:
           prerelease: true
           body: "This is a nightly build of the FluCoMa CLI tools. As such, be warned there may be bugs or other unexpected behaviour. The build hash is ${{ github.sha }}"
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: FluCoMa-CLI-*.tar.gz
+          file: FluCoMa-CLI-*.zip
           file_glob: true
           tag: nightly
           overwrite: true
