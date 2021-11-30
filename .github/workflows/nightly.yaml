@@ -104,7 +104,6 @@ jobs:
     needs: [windows, linux, macos]
 
     steps:
-
       - uses: actions/download-artifact@v2
         with:
           name: linuxbuild
@@ -119,6 +118,9 @@ jobs:
         with:
           name: winbuild
           path: FluCoMa-CLI-Windows.tar.gz
+
+      - name: ls
+        run: ls
   
       - uses: dev-drprasad/delete-tag-and-release@v0.2.0
         with:
@@ -130,7 +132,7 @@ jobs:
       - name: package and upload
         uses: svenstaro/upload-release-action@v2
         with:
-          release_name: FluCoMa Max Nightly Build
+          release_name: FluCoMa CLI Nightly Release
           prerelease: true
           file_glob: true
           file: FluCoMa-CLI-*.tar.gz
