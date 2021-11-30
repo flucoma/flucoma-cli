@@ -137,7 +137,17 @@ private:
     mSamplingRate = sampleRate;
     return {};
   }
-
+  
+  fluid::FluidTensorView<float, 2> allFrames() override
+  {
+      return mData; 
+  }
+  
+  fluid::FluidTensorView<const float, 2> allFrames() const override
+  {
+      return mData; 
+  }
+  
   fluid::FluidTensorView<float, 1> samps(index channel) override
   {
       return mData.col(channel); 
