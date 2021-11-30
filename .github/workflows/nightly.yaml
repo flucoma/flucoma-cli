@@ -30,7 +30,7 @@ jobs:
     #   working-directory: release-packaging 
 
     - name: compress release
-      run: Compress-Archive release-packaging/FluidCorpusManipulation FluCoMa-CLI-Windows.zip
+      run: Compress-Archive release-packaging/FluidCorpusManipulation FluCoMa-CLI-Windows-nightly.zip
 
     - uses: actions/upload-artifact@v2
       with:
