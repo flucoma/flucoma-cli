@@ -114,17 +114,17 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: linuxbuild
-          path: FluCoMa-CLI-Linux-nightly.zip
+          path: .
 
       - uses: actions/download-artifact@v2
         with:
           name: macbuild
-          path: FluCoMa-CLI-Mac-nightly.zip
+          path: .
 
       - uses: actions/download-artifact@v2
         with:
           name: winbuild
-          path: FluCoMa-CLI-Windows-nightly.zip
+          path: .
 
       - name: ls
         run: ls
@@ -143,7 +143,7 @@ jobs:
           prerelease: true
           body: "This is a nightly build of the FluCoMa CLI tools. As such, be warned there may be bugs or other unexpected behaviour. The build hash is ${{ github.sha }}"
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: "FluCoMa-CLI-*.zip"
+          file: FluCoMa-CLI-*.zip
           file_glob: true
           tag: nightly
           overwrite: true
