@@ -57,14 +57,14 @@ jobs:
         run: ninja install
         working-directory: build
       
-    - name: compress release
-      run: tar -cvzf FluCoMa-CLI-Mac.tar.gz FluidCorpusManipulation
-      working-directory: release-packaging
-    
-      - uses: actions/upload-artifact@v2
-        with:
-          name: macbuild
-          path: release-packaging/FluCoMa-CLI-Mac.tar.gz
+      - name: compress release
+        run: tar -cvzf FluCoMa-CLI-Mac.tar.gz FluidCorpusManipulation
+        working-directory: release-packaging
+      
+        - uses: actions/upload-artifact@v2
+          with:
+            name: macbuild
+            path: release-packaging/FluCoMa-CLI-Mac.tar.gz
 
   linux:
     runs-on: ubuntu-18.04
