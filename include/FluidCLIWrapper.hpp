@@ -183,7 +183,7 @@ private:
   int                  mReadError;
 };
 
-template <template <typename T> class Client>
+template <class Client>
 class CLIWrapper
 {
   enum ErrorType {
@@ -195,7 +195,7 @@ class CLIWrapper
     kErrValType
   };
 
-  using ClientType = Client<float>;
+  using ClientType = Client;
   using ParamSetType = typename ClientType::ParamSetType;
   using ConstString = const std::string;
 
