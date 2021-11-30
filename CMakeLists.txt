@@ -109,9 +109,7 @@ target_sources(FLUID_CLI_WRAPPER
 find_package (Threads REQUIRED)
 set(THREADS_PREFER_PTHREAD_FLAG TRUE) 
 target_link_libraries (FLUID_CLI_WRAPPER INTERFACE Threads::Threads)
-# if(UNIX AND NOT APPLE)
-#     target_compile_options(FLUID_CLI_WRAPPER PUBLIC -pthread)
-# endif() 
+
 
 SUBDIRLIST(PROJECT_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src)
 foreach (project_dir ${PROJECT_DIRS})
