@@ -45,14 +45,12 @@ FetchContent_Declare(
   flucoma-core
   GIT_REPOSITORY https://github.com/flucoma/flucoma-core.git
   GIT_PROGRESS TRUE
-  GIT_TAG 97f68a5
 )
 
 FetchContent_Declare(
   flucoma-docs
   GIT_REPOSITORY https://github.com/flucoma/flucoma-docs.git
   GIT_PROGRESS TRUE
-  GIT_TAG 0fb113e
 )
 
 if(FLUID_PATH)
@@ -107,6 +105,13 @@ target_sources(FLUID_CLI_WRAPPER
   INTERFACE
   "${CMAKE_CURRENT_SOURCE_DIR}/include/FluidCLIWrapper.hpp"
 )
+
+find_package (Threads REQUIRED)
+set(THREADS_PREFER_PTHREAD_FLAG TRUE) 
+target_link_libraries (FLUID_CLI_WRAPPER INTERFACE Threads::Threads)
+# if(UNIX AND NOT APPLE)
+#     target_compile_options(FLUID_CLI_WRAPPER PUBLIC -pthread)
+# endif() 
 
 SUBDIRLIST(PROJECT_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src)
 foreach (project_dir ${PROJECT_DIRS})
