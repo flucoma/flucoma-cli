@@ -19,9 +19,12 @@ jobs:
 
         - name: clone latest flucoma-core 
           run: git clone --branch dev https://github.com/flucoma/flucoma-core.git core
+
+        - name: clone latest flucoma-docs
+          run: git clone --branch dev https://github.com/flucoma/flucoma-docs.git docs
         
         - name: cmake
-          run: cmake -GNinja -DFLUID_PATH=../core -DDOCS=ON ..
+          run: cmake -GNinja -DFLUID_PATH=../core -DDOCS=ON -DFLUID_DOCS_PATH=../docs ..
           working-directory: build
           
         - name: install
