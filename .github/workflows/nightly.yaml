@@ -5,6 +5,34 @@ on:
     branches: [ dev, enhance/ci ]
 
 jobs:
+  docs:
+      runs-on: ubuntu-18.04
+
+      steps:
+        - uses: actions/checkout@v2
+
+        - name: install ninja
+          run: sudo apt update && sudo apt install ninja-build
+          
+        - name: make build directory
+          run: mkdir -p build
+
+        - name: clone latest flucoma-core 
+          run: git clone --branch dev https://github.com/flucoma/flucoma-core.git core
+        
+        - name: cmake
+          run: cmake -GNinja -DFLUID_PATH=../core -DDOCS=ON ..
+          working-directory: build
+          
+        - name: install
+          run: ninja MAKE_CLI_REF
+          working-directory: build
+
+        - uses: actions/upload-artifact@v2
+          with:
+            name: docs
+            path: build/cli_ref
+
   windows:
     runs-on: windows-latest
 
@@ -24,10 +52,6 @@ jobs:
     - name: build binaries
       run: cmake --build . --target install --config Release
       working-directory: build
-
-    # - name: compress release
-    #   run: tar -cvzf FluCoMa-CLI-Windows.tar.gz FluidCorpusManipulation
-    #   working-directory: release-packaging 
 
     - name: compress release
       run: Compress-Archive release-packaging/FluidCorpusManipulation FluCoMa-CLI-Windows-nightly.zip
@@ -59,10 +83,6 @@ jobs:
       - name: ninja install
         run: ninja install
         working-directory: build
-      
-      # - name: compress release
-      #   run: tar -cvzf FluCoMa-CLI-Mac.tar.gz FluidCorpusManipulation
-      #   working-directory: release-packaging
 
       - name: compress release
         run: zip -r ../FluCoMa-CLI-Mac-nightly.zip FluidCorpusManipulation
@@ -111,6 +131,15 @@ jobs:
     needs: [windows, linux, macos]
 
     steps:
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: docs
+          path: .
+      
+      - name: see
+        run: ls
+
       - uses: actions/download-artifact@v2
         with:
           name: linuxbuild
