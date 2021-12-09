@@ -6,13 +6,16 @@ on:
 
 jobs:
   docs:
-      runs-on: ubuntu-18.04
+      runs-on: macos-11
 
       steps:
         - uses: actions/checkout@v2
 
-        - name: install ninja
-          run: sudo apt update && sudo apt install ninja-build
+        # - name: install ninja
+        #   run: sudo apt update && sudo apt install ninja-build
+
+        - name: Install ninja
+          run: brew install ninja
           
         - name: make build directory
           run: mkdir -p build
@@ -127,7 +130,6 @@ jobs:
         with:
           name: linuxbuild
           path: FluCoMa-CLI-Linux-nightly.zip
-  
   
   release:
     runs-on: ubuntu-latest
