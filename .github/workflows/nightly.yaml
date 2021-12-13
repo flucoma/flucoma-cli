@@ -59,13 +59,10 @@ jobs:
       run: cmake --build . --target install --config Release
       working-directory: build
 
-    - name: compress release
-      run: Compress-Archive release-packaging/FluidCorpusManipulation FluCoMa-CLI-Windows-nightly.zip
-
     - uses: actions/upload-artifact@v2
       with:
         name: winbuild
-        path: FluCoMa-CLI-Windows-nightly.zip
+        path: release-packaging/FluidCorpusManipulation
   
   macos:
     runs-on: macos-11
@@ -90,15 +87,11 @@ jobs:
         run: ninja install
         working-directory: build
 
-      - name: compress release
-        run: zip -r ../FluCoMa-CLI-Mac-nightly.zip FluidCorpusManipulation
-        working-directory: release-packaging
-      
       - uses: actions/upload-artifact@v2
         with:
           name: macbuild
-          path: FluCoMa-CLI-Mac-nightly.zip
-
+          path: release-packaging/FluidCorpusManipulation
+      
   linux:
     runs-on: ubuntu-18.04
 
@@ -122,14 +115,10 @@ jobs:
         run: ninja install
         working-directory: build
 
-      - name: compress release
-        run: zip -r ../FluCoMa-CLI-Linux-nightly.zip FluidCorpusManipulation
-        working-directory: release-packaging
-
       - uses: actions/upload-artifact@v2
         with:
           name: linuxbuild
-          path: FluCoMa-CLI-Linux-nightly.zip
+          path: release-packaging/FluidCorpusManipulation
   
   release:
     runs-on: ubuntu-latest
@@ -140,28 +129,43 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: docs
-          path: .
-      
-      - name: see
-        run: ls
+          path: docs
 
       - uses: actions/download-artifact@v2
         with:
           name: linuxbuild
-          path: .
+          path: linux
+      
+      - name: copy docs to linux
+        run: cp -r docs linux/release-packaging/FluidCorpusManipulation
+
+      - name: compress linux
+        run: zip -r ../../FluCoMa-CLI-Linux-nightly.zip FluidCorpusManipulation
+        working-directory: linux/release-packaging
 
       - uses: actions/download-artifact@v2
         with:
           name: macbuild
-          path: .
+          path: mac
+
+      - name: copy docs to mac
+        run: cp -r docs mac/release-packaging/FluidCorpusManipulation
+
+      - name: compress mac
+        run: zip -r ../../FluCoMa-CLI-Mac-nightly.zip FluidCorpusManipulation
+        working-directory: mac/release-packaging
 
       - uses: actions/download-artifact@v2
         with:
           name: winbuild
-          path: .
+          path: win
 
-      - name: ls
-        run: ls
+      - name: copy docs to windows
+        run: cp -r docs win/release-packaging/FluidCorpusManipulation
+
+      - name: compress windows
+        run: zip -r ../../FluCoMa-CLI-Windows-nightly.zip FluidCorpusManipulation
+        working-directory: win/release-packaging
   
       - uses: dev-drprasad/delete-tag-and-release@v0.2.0
         with:
