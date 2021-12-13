@@ -141,11 +141,11 @@ jobs:
         working-directory: linux
       
       - name: copy docs to linux
-        run: cp -r docs linux/release-packaging/FluidCorpusManipulation
+        run: cp -r docs linux
 
       - name: compress linux
-        run: zip -r ../../FluCoMa-CLI-Linux-nightly.zip FluidCorpusManipulation
-        working-directory: linux/release-packaging
+        run: zip -r ../FluCoMa-CLI-Linux-nightly.zip FluidCorpusManipulation
+        working-directory: linux
 
       - uses: actions/download-artifact@v2
         with:
@@ -153,11 +153,11 @@ jobs:
           path: mac
 
       - name: copy docs to mac
-        run: cp -r docs mac/release-packaging/FluidCorpusManipulation
+        run: cp -r docs mac
 
       - name: compress mac
-        run: zip -r ../../FluCoMa-CLI-Mac-nightly.zip FluidCorpusManipulation
-        working-directory: mac/release-packaging
+        run: zip -r ../FluCoMa-CLI-Mac-nightly.zip FluidCorpusManipulation
+        working-directory: mac
 
       - uses: actions/download-artifact@v2
         with:
@@ -165,11 +165,11 @@ jobs:
           path: win
 
       - name: copy docs to windows
-        run: cp -r docs win/release-packaging/FluidCorpusManipulation
+        run: cp -r docs win
 
       - name: compress windows
-        run: zip -r ../../FluCoMa-CLI-Windows-nightly.zip FluidCorpusManipulation
-        working-directory: win/release-packaging
+        run: zip -r ../FluCoMa-CLI-Windows-nightly.zip FluidCorpusManipulation
+        working-directory: win
   
       - uses: dev-drprasad/delete-tag-and-release@v0.2.0
         with:
