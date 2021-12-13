@@ -135,6 +135,10 @@ jobs:
         with:
           name: linuxbuild
           path: linux
+
+      - name: see
+        run: ls
+        working-directory: linux
       
       - name: copy docs to linux
         run: cp -r docs linux/release-packaging/FluidCorpusManipulation
