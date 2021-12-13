@@ -11,10 +11,10 @@ jobs:
       steps:
         - uses: actions/checkout@v2
 
-        # - name: install ninja
-        #   run: sudo apt update && sudo apt install ninja-build
+        - name: install python dependencies
+          run: pip3 install pyyaml docutils jinja2
 
-        - name: Install ninja
+        - name: install ninja
           run: brew install ninja
           
         - name: make build directory
@@ -133,7 +133,7 @@ jobs:
   
   release:
     runs-on: ubuntu-latest
-    needs: [windows, linux, macos]
+    needs: [windows, linux, macos, docs]
 
     steps:
 
