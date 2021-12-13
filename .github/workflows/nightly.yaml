@@ -144,7 +144,7 @@ jobs:
         run: cp -r docs linux
 
       - name: compress linux
-        run: zip -r ../FluCoMa-CLI-Linux-nightly.zip FluidCorpusManipulation
+        run: zip -r ../FluCoMa-CLI-Linux-nightly.zip .
         working-directory: linux
 
       - uses: actions/download-artifact@v2
@@ -156,7 +156,7 @@ jobs:
         run: cp -r docs mac
 
       - name: compress mac
-        run: zip -r ../FluCoMa-CLI-Mac-nightly.zip FluidCorpusManipulation
+        run: zip -r ../FluCoMa-CLI-Mac-nightly.zip .
         working-directory: mac
 
       - uses: actions/download-artifact@v2
@@ -168,7 +168,7 @@ jobs:
         run: cp -r docs win
 
       - name: compress windows
-        run: zip -r ../FluCoMa-CLI-Windows-nightly.zip FluidCorpusManipulation
+        run: zip -r ../FluCoMa-CLI-Windows-nightly.zip .
         working-directory: win
   
       - uses: dev-drprasad/delete-tag-and-release@v0.2.0
