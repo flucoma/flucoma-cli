@@ -2,7 +2,7 @@ name: Nightly Releases
 
 on:
   push:
-    branches: [ dev, enhance/ci ]
+    branches: [ dev, ci/** ]
 
 jobs:
   docs:
@@ -10,35 +10,11 @@ jobs:
       steps:
         - uses: actions/checkout@v2
 
-        - name: install python dependencies
-          run: pip3 install pyyaml docutils jinja2
-
-        - name: install ninja
-          run: brew install ninja
+        - name: setup environment
+          uses: flucoma/actions/env@v2
           
-        - name: make build directory
-          run: mkdir -p build
-
-        - name: clone latest flucoma-core 
-          run: git clone --branch dev https://github.com/flucoma/flucoma-core.git core
-
-        - name: clone latest flucoma-docs
-          run: git clone --branch dev https://github.com/flucoma/flucoma-docs.git docs
-        
-        - uses: actions/cache@v2
-          id: cache
-          with:
-            path: build
-            key: ${{ runner.os }}-${{ hashFiles('build') }}
-
-        - name: generate cmake configuration
-          if: steps.cache.outputs.cache-hit != 'true' 
-          run: cmake -GNinja -DFLUID_PATH=../core -DDOCS=ON -DFLUID_DOCS_PATH=../docs ..
-          working-directory: build
-          
-        - name: install
-          run: ninja MAKE_CLI_REF
-          working-directory: build
+        - name: build docs
+          uses: flucoma/actions/cli@v2
 
         - uses: actions/upload-artifact@v2
           with:
@@ -50,26 +26,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       
-    - name: make build directory
-      run: mkdir -p build
-
-    - name: clone latest flucoma-core 
-      run: git clone --branch dev https://github.com/flucoma/flucoma-core.git core    
-    
-    - uses: actions/cache@v2
-      id: cache
-      with:
-        path: build
-        key: ${{ runner.os }}-${{ hashFiles('build') }}
-
-    - name: cmake
-      if: steps.cache.outputs.cache-hit != 'true' 
-      run: cmake -DFLUID_PATH="../core" ..
-      working-directory: build
+    - name: setup environment
+      uses: flucoma/actions/env@v2
       
-    - name: build binaries
-      run: cmake --build . --target install --config Release
-      working-directory: build
+    - name: build docs
+      uses: flucoma/actions/cli@v2
 
     - uses: actions/upload-artifact@v2
       with:
@@ -81,29 +42,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install ninja
-        run: brew install ninja
-        
-      - name: create build directory
-        run: mkdir -p build
-
-      - name: Clone latest flucoma-core 
-        run: git clone --branch dev https://github.com/flucoma/flucoma-core.git core
+      - name: setup environment
+        uses: flucoma/actions/env@v2
       
-      - uses: actions/cache@v2
-        id: cache
-        with:
-          path: build
-          key: ${{ runner.os }}-${{ hashFiles('build') }}
-
-      - name: Run cmake configuration
-        if: steps.cache.outputs.cache-hit != 'true' 
-        run: cmake -GNinja -DFLUID_PATH=../core ..
-        working-directory: build
-        
-      - name: ninja install
-        run: ninja install
-        working-directory: build
+      - name: build docs
+        uses: flucoma/actions/cli@v2
 
       - uses: actions/upload-artifact@v2
         with:
@@ -115,29 +58,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: install ninja
-        run: sudo apt update && sudo apt install ninja-build
+      - name: setup environment
+        uses: flucoma/actions/env@v2
         
-      - name: make build directory
-        run: mkdir -p build
-
-      - name: clone latest flucoma-core 
-        run: git clone --branch dev https://github.com/flucoma/flucoma-core.git core
-      
-      - uses: actions/cache@v2
-        id: cache
-        with:
-          path: build
-          key: ${{ runner.os }}-${{ hashFiles('build') }}
-
-      - name: cmake
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: cmake -GNinja -DFLUID_PATH=../core ..
-        working-directory: build
-        
-      - name: install
-        run: ninja install
-        working-directory: build
+      - name: build docs
+        uses: flucoma/actions/cli@v2
 
       - uses: actions/upload-artifact@v2
         with:
