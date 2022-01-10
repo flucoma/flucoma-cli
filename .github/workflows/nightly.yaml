@@ -2,7 +2,7 @@ name: Nightly Releases
 
 on:
   push:
-    branches: [ dev, ci/** ]
+    branches: [ dev, ci/**, enhance/ci ]
 
 jobs:
   docs:
