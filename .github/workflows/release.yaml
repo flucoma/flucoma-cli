@@ -1,4 +1,4 @@
-name: Release FluCoMa
+name: Release
 on:
   workflow_dispatch:
     inputs:
