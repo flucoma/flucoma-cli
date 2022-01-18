@@ -51,6 +51,8 @@ jobs:
   linuxbuild:
     runs-on: ubuntu-18.04
     steps:
+      - name: announce
+        run: echo ${{ github.events.inputs.name }}
       - uses: actions/checkout@v2
       - uses: flucoma/actions/env@v4
         with: 
