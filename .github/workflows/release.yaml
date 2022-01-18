@@ -47,12 +47,9 @@ jobs:
   linuxbuild:
     runs-on: ubuntu-18.04
     steps:
-      - name: test
-        run: echo sup
-      # - uses: actions/checkout@v2
-      # - uses: flucoma/actions/env@v4 
-      # - uses: flucoma/actions/pd@v4
-
+      - uses: actions/checkout@v2
+      - uses: flucoma/actions/env@v4 
+      - uses: flucoma/actions/pd@v4
       # - uses: actions/upload-artifact@v2                                                                                                                                                 
       #   with:                                                                                                                                                                            
       #     name: linuxbuild                                                                                                                                                                
