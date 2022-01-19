@@ -27,7 +27,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: winbuild
-        path: release-packaging/FluidCorpusManipulation
+        path: release-packaging
   
   macos:
     runs-on: macos-11
@@ -39,7 +39,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: macbuild
-          path: release-packaging/FluidCorpusManipulation
+          path: release-packaging
       
   linux:
     runs-on: ubuntu-18.04
@@ -51,7 +51,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: linuxbuild
-          path: release-packaging/FluidCorpusManipulation
+          path: release-packaging
   
   release:
     runs-on: ubuntu-latest
