@@ -27,7 +27,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: winbuild
-        path: release-packaging/FluidCorpusManipulation
+        path: release-packaging
   
   macos:
     runs-on: macos-11
@@ -39,7 +39,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: macbuild
-          path: release-packaging/FluidCorpusManipulation
+          path: release-packaging
       
   linux:
     runs-on: ubuntu-18.04
@@ -51,7 +51,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: linuxbuild
-          path: release-packaging/FluidCorpusManipulation
+          path: release-packaging
   
   release:
     runs-on: ubuntu-latest
@@ -61,38 +61,41 @@ jobs:
         with:
           name: docs
           path: docs
-
+      
+      #### LINUX ####
       - uses: actions/download-artifact@v2
         with:
           name: linuxbuild
           path: linux
-      
+
       - name: copy docs to linux
-        run: cp -r docs linux
+        run: cp -r docs linux/FluidCorpusManipulation
 
       - name: compress linux
         run: zip -r ../FluCoMa-CLI-Linux-nightly.zip .
         working-directory: linux
 
+      #### MAC ####
       - uses: actions/download-artifact@v2
         with:
           name: macbuild
           path: mac
 
       - name: copy docs to mac
-        run: cp -r docs mac
+        run: cp -r docs mac/FluidCorpusManipulation
 
       - name: compress mac
         run: zip -r ../FluCoMa-CLI-Mac-nightly.zip .
         working-directory: mac
 
+      #### WINDOWS ####
       - uses: actions/download-artifact@v2
         with:
           name: winbuild
           path: win
 
       - name: copy docs to windows
-        run: cp -r docs win
+        run: cp -r docs win/FluidCorpusManipulation
 
       - name: compress windows
         run: zip -r ../FluCoMa-CLI-Windows-nightly.zip .
