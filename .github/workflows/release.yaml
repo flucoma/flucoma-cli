@@ -48,10 +48,12 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
-      - id: env
-        uses: flucoma/actions/env@v5 
+      - uses: flucoma/actions/env@v5 
       - uses: flucoma/actions/cli@v4
-      - run: echo ${{ steps.env.outputs.sha }}
+    
+      - id: version
+        uses: flucoma/actions/getversion@v5
+      - run: echo ${{ steps.version.outputs.sha }}
       # - uses: actions/upload-artifact@v2                                                                                                                                                 
       #   with:                                                                                                                                                                            
       #     name: linuxbuild                                                                                                                                                                
