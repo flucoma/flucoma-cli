@@ -53,7 +53,7 @@ jobs:
     
       - id: version
         uses: flucoma/actions/getversion@v5
-      - run: echo ${{ steps.version.outputs.sha }}
+      - run: echo ${{ steps.version.outputs.version }}
       # - uses: actions/upload-artifact@v2                                                                                                                                                 
       #   with:                                                                                                                                                                            
       #     name: linuxbuild                                                                                                                                                                
