@@ -6,11 +6,13 @@ on:
 
 jobs:
   docs:
-    runs-on: macos-11
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
       - uses: flucoma/actions/env@v4        
-      - uses: flucoma/actions/clidocs@v4
+      - uses: flucoma/actions/docs@v4
+        with:
+          target: MAKE_CLI_REF
 
       - uses: actions/upload-artifact@v2
         with:
