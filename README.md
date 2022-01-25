@@ -8,6 +8,9 @@ This repository hosts code for generating the command line executables and docum
 
 ## How to Build
 
+You will need `CMake` >= 3.11
+A C++ 14 compliant compiler for macOS or Windows (via XCode tools on macOS; Visual Studio 17 >= 15.9 on Windows; GCC or clang on Linux)
+
 ```
 mkdir -p build && cd build
 cmake ..
