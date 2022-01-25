@@ -7,6 +7,19 @@ This repository hosts code for generating the command line executables and docum
 * CMake code for managing dependencies, building and packaging.
 
 ## How to Build
+
+```
+mkdir -p build && cd build
+cmake -D ..
+make install
+```
+
+Alternatively, flucoma-cli is now on the [AUR / Arch User Repository](https://aur.archlinux.org/packages/flucoma-cli-git/) and can now be compiled and downloaded by executing:
+```bash
+yay -S flucoma-cli-git
+```
+on Arch Linux and Manjaro (with thanks to @madskjeldgaard)
+
 Please see the [extensive compilation guide](https://github.com/flucoma/flucoma-cli/wiki/Compiling) for instructions on building this package.
 
 ## Credits 
