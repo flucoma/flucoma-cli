@@ -10,7 +10,7 @@ This repository hosts code for generating the command line executables and docum
 
 ```
 mkdir -p build && cd build
-cmake -D ..
+cmake ..
 make install
 ```
 
