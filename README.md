@@ -8,8 +8,6 @@ This repository hosts code for generating the command line executables and docum
 
 ## Minimal Quick Build
 
-# Building
-
 Minimal build steps below. For detailed guidance see https://github.com/flucoma/flucoma-cli/wiki/Compiling
 
 ## Prerequisites 
