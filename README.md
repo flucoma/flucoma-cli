@@ -6,7 +6,7 @@ This repository hosts code for generating the command line executables and docum
 * Stubs for producing an executable for each 'client' in the Fluid Corpus Manipulation Library.
 * CMake code for managing dependencies, building and packaging.
 
-# How to Build
+## How to Build
 Please see the [extensive compilation guide](https://github.com/flucoma/flucoma-cli/wiki/Compiling) for instructions on building this package.
 
 ## Credits 
