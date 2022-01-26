@@ -114,7 +114,7 @@ jobs:
         with:
           name: FluCoMa CLI Nightly Release
           body: "This is a nightly build of the FluCoMa CLI tools. As such, be warned there may be bugs or other unexpected behaviour. The build hash is ${{ github.sha }}"
-          file: FluCoMa-CLI-*.zip
+          files: FluCoMa-CLI-*.zip
           prerelease: true
           tag_name: nightly
           draft: false
