@@ -25,10 +25,13 @@ jobs:
     - uses: flucoma/actions/env@v4      
     - uses: flucoma/actions/cli@v4
 
+    - name: compress archive
+      run: tar -zcvf winbuild.tar.gz release-packaging
+
     - uses: actions/upload-artifact@v2
       with:
         name: winbuild
-        path: release-packaging
+        path: winbuild.tar.gz
   
   macos:
     runs-on: macos-11
@@ -37,10 +40,13 @@ jobs:
       - uses: flucoma/actions/env@v4      
       - uses: flucoma/actions/cli@v4
 
+      - name: compress archive
+        run: tar -zcvf macbuild.tar.gz release-packaging
+
       - uses: actions/upload-artifact@v2
         with:
           name: macbuild
-          path: release-packaging
+          path: macbuild.tar.gz
       
   linux:
     runs-on: ubuntu-18.04
@@ -49,10 +55,13 @@ jobs:
       - uses: flucoma/actions/env@v4
       - uses: flucoma/actions/cli@v4
 
+      - name: compress archive
+        run: tar -zcvf linuxbuild.tar.gz release-packaging
+
       - uses: actions/upload-artifact@v2
         with:
           name: linuxbuild
-          path: release-packaging
+          path: linuxbuild.tar.gz
   
   release:
     runs-on: ubuntu-latest
@@ -67,7 +76,10 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: linuxbuild
-          path: linux
+          path: linux.tar.gz
+
+      - name: untar
+        run: tar zxvf linux.tar.gz -C linux && ls
 
       - name: copy docs to linux
         run: cp -r docs linux/FluidCorpusManipulation
@@ -80,7 +92,10 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: macbuild
-          path: mac
+          path: mac.tar.gz
+
+      - name: untar
+        run: tar zxvf mac.tar.gz -C mac && ls
 
       - name: copy docs to mac
         run: cp -r docs mac/FluidCorpusManipulation
@@ -93,7 +108,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: winbuild
-          path: win
+          path: win.tar.gz
 
       - name: copy docs to windows
         run: cp -r docs win/FluidCorpusManipulation
