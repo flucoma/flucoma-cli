@@ -76,10 +76,13 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: linuxbuild
-          path: linux.tar.gz
+          path: linux
 
+      - name: see
+        run: ls
+        
       - name: untar
-        run: tar zxvf linux.tar.gz -C linux && ls
+        run: tar zxvf linux/linux.tar.gz -C archive && ls
 
       - name: copy docs to linux
         run: cp -r docs linux/FluidCorpusManipulation
