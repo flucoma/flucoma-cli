@@ -79,8 +79,8 @@ jobs:
           path: linux
 
       - name: see
-        run: ls
-        
+        run: ls -R
+
       - name: untar
         run: tar zxvf linux/linux.tar.gz -C archive && ls
 
