@@ -82,10 +82,14 @@ jobs:
         run: ls -R
 
       - name: untar
-        run: tar zxvf linux/linuxbuild.tar.gz -C linuxbuild && ls
+        run: tar zxvf linuxbuild.tar.gz -C build
+        working-directory: linux
+
+      - name: see
+        run: ls -R
 
       - name: copy docs to linux
-        run: cp -r docs linux/FluidCorpusManipulation
+        run: cp -r docs linux/build/FluidCorpusManipulation
 
       - name: compress linux
         run: zip -r ../FluCoMa-CLI-Linux-nightly.zip .
