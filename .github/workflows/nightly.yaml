@@ -82,7 +82,7 @@ jobs:
         run: ls -R
 
       - name: untar
-        run: ls && tar zxvf linuxbuild.tar.gz -C build
+        run: ls && tar zxvf linuxbuild.tar.gz -C .
         working-directory: ./linux
 
       - name: see
