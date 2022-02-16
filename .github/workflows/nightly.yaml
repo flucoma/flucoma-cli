@@ -78,15 +78,9 @@ jobs:
           name: linuxbuild
           path: linux
 
-      - name: see
-        run: ls -R
-
       - name: untar
-        run: ls && tar zxvf linuxbuild.tar.gz -C .
+        run: tar zxvf linuxbuild.tar.gz -C .
         working-directory: ./linux
-
-      - name: see
-        run: ls -R
 
       - name: copy docs to linux
         run: cp -r docs linux/release-packaging/FluidCorpusManipulation
@@ -95,37 +89,39 @@ jobs:
         run: zip -r ../../FluCoMa-CLI-Linux-nightly.zip .
         working-directory: linux/release-packaging
 
-      - name: see
-        run: ls -R
-
       #### MAC ####
       - uses: actions/download-artifact@v2
         with:
           name: macbuild
-          path: mac.tar.gz
+          path: mac
 
       - name: untar
-        run: tar zxvf mac.tar.gz -C mac && ls
+        run: tar zxvf macbuild.tar.gz -C .
+        working-directory: ./mac
 
       - name: copy docs to mac
-        run: cp -r docs mac/FluidCorpusManipulation
+        run: cp -r docs mac/release-packaging/FluidCorpusManipulation
 
       - name: compress mac
-        run: zip -r ../FluCoMa-CLI-Mac-nightly.zip .
-        working-directory: mac
+        run: zip -r ../../FluCoMa-CLI-Mac-nightly.zip .
+        working-directory: mac/release-packaging
 
       #### WINDOWS ####
       - uses: actions/download-artifact@v2
         with:
           name: winbuild
-          path: win.tar.gz
+          path: win
 
-      - name: copy docs to windows
-        run: cp -r docs win/FluidCorpusManipulation
+      - name: untar
+        run: tar zxvf macbuild.tar.gz -C .
+        working-directory: ./win
 
-      - name: compress windows
-        run: zip -r ../FluCoMa-CLI-Windows-nightly.zip .
-        working-directory: win
+      - name: copy docs to win
+        run: cp -r docs win/release-packaging/FluidCorpusManipulation
+
+      - name: compress mac
+        run: zip -r ../../FluCoMa-CLI-Windows-nightly.zip .
+        working-directory: win/release-packaging
   
       - uses: dev-drprasad/delete-tag-and-release@v0.2.0
         with:
