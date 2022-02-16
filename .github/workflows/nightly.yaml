@@ -89,11 +89,14 @@ jobs:
         run: ls -R
 
       - name: copy docs to linux
-        run: cp -r docs linux/build/FluidCorpusManipulation
+        run: cp -r docs linux/release-packaging/FluidCorpusManipulation
 
       - name: compress linux
-        run: zip -r ../FluCoMa-CLI-Linux-nightly.zip .
-        working-directory: linux
+        run: zip -r ../../FluCoMa-CLI-Linux-nightly.zip .
+        working-directory: linux/release-packaging
+
+      - name: see
+        run: ls -R
 
       #### MAC ####
       - uses: actions/download-artifact@v2
