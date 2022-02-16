@@ -72,12 +72,22 @@ jobs:
           name: docs
           path: docs
       
-      #### LINUX ####
       - uses: actions/download-artifact@v2
         with:
           name: linuxbuild
           path: linux
 
+      - uses: actions/download-artifact@v2
+        with:
+          name: macbuild
+          path: mac
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: winbuild
+          path: win
+
+      #### LINUX ####
       - name: untar
         run: tar zxvf linuxbuild.tar.gz -C .
         working-directory: ./linux
@@ -90,10 +100,8 @@ jobs:
         working-directory: linux/release-packaging
 
       #### MAC ####
-      - uses: actions/download-artifact@v2
-        with:
-          name: macbuild
-          path: mac
+      - name: see
+        run : ls -R
 
       - name: untar
         run: tar zxvf macbuild.tar.gz -C .
@@ -107,13 +115,8 @@ jobs:
         working-directory: mac/release-packaging
 
       #### WINDOWS ####
-      - uses: actions/download-artifact@v2
-        with:
-          name: winbuild
-          path: win
-
       - name: untar
-        run: tar zxvf macbuild.tar.gz -C .
+        run: tar zxvf winbuild.tar.gz -C .
         working-directory: ./win
 
       - name: copy docs to win
