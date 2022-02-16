@@ -25,10 +25,13 @@ jobs:
     - uses: flucoma/actions/env@v4      
     - uses: flucoma/actions/cli@v4
 
+    - name: compress archive
+      run: tar -zcvf winbuild.tar.gz release-packaging
+
     - uses: actions/upload-artifact@v2
       with:
         name: winbuild
-        path: release-packaging
+        path: winbuild.tar.gz
   
   macos:
     runs-on: macos-11
@@ -37,10 +40,13 @@ jobs:
       - uses: flucoma/actions/env@v4      
       - uses: flucoma/actions/cli@v4
 
+      - name: compress archive
+        run: tar -zcvf macbuild.tar.gz release-packaging
+
       - uses: actions/upload-artifact@v2
         with:
           name: macbuild
-          path: release-packaging
+          path: macbuild.tar.gz
       
   linux:
     runs-on: ubuntu-18.04
@@ -49,10 +55,13 @@ jobs:
       - uses: flucoma/actions/env@v4
       - uses: flucoma/actions/cli@v4
 
+      - name: compress archive
+        run: tar -zcvf linuxbuild.tar.gz release-packaging
+
       - uses: actions/upload-artifact@v2
         with:
           name: linuxbuild
-          path: release-packaging
+          path: linuxbuild.tar.gz
   
   release:
     runs-on: ubuntu-latest
@@ -63,44 +72,59 @@ jobs:
           name: docs
           path: docs
       
-      #### LINUX ####
       - uses: actions/download-artifact@v2
         with:
           name: linuxbuild
           path: linux
 
-      - name: copy docs to linux
-        run: cp -r docs linux/FluidCorpusManipulation
-
-      - name: compress linux
-        run: zip -r ../FluCoMa-CLI-Linux-nightly.zip .
-        working-directory: linux
-
-      #### MAC ####
       - uses: actions/download-artifact@v2
         with:
           name: macbuild
           path: mac
 
-      - name: copy docs to mac
-        run: cp -r docs mac/FluidCorpusManipulation
-
-      - name: compress mac
-        run: zip -r ../FluCoMa-CLI-Mac-nightly.zip .
-        working-directory: mac
-
-      #### WINDOWS ####
       - uses: actions/download-artifact@v2
         with:
           name: winbuild
           path: win
 
-      - name: copy docs to windows
-        run: cp -r docs win/FluidCorpusManipulation
+      #### LINUX ####
+      - name: untar
+        run: tar zxvf linuxbuild.tar.gz -C .
+        working-directory: ./linux
 
-      - name: compress windows
-        run: zip -r ../FluCoMa-CLI-Windows-nightly.zip .
-        working-directory: win
+      - name: copy docs to linux
+        run: cp -r docs linux/release-packaging/FluidCorpusManipulation
+
+      - name: compress linux
+        run: zip -r ../../FluCoMa-CLI-Linux-nightly.zip .
+        working-directory: linux/release-packaging
+
+      #### MAC ####
+      - name: see
+        run : ls -R
+
+      - name: untar
+        run: tar zxvf macbuild.tar.gz -C .
+        working-directory: ./mac
+
+      - name: copy docs to mac
+        run: cp -r docs mac/release-packaging/FluidCorpusManipulation
+
+      - name: compress mac
+        run: zip -r ../../FluCoMa-CLI-Mac-nightly.zip .
+        working-directory: mac/release-packaging
+
+      #### WINDOWS ####
+      - name: untar
+        run: tar zxvf winbuild.tar.gz -C .
+        working-directory: ./win
+
+      - name: copy docs to win
+        run: cp -r docs win/release-packaging/FluidCorpusManipulation
+
+      - name: compress mac
+        run: zip -r ../../FluCoMa-CLI-Windows-nightly.zip .
+        working-directory: win/release-packaging
   
       - uses: dev-drprasad/delete-tag-and-release@v0.2.0
         with:
