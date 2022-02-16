@@ -136,7 +136,17 @@ private:
     mSamplingRate = sampleRate;
     return {};
   }
-
+  
+  fluid::FluidTensorView<float, 2> allFrames() override
+  {
+      return mData; 
+  }
+  
+  fluid::FluidTensorView<const float, 2> allFrames() const override
+  {
+      return mData; 
+  }
+  
   fluid::FluidTensorView<float, 1> samps(index channel) override
   {
       return mData.col(channel); 
@@ -172,7 +182,7 @@ private:
   int                  mReadError;
 };
 
-template <template <typename T> class Client>
+template <class Client>
 class CLIWrapper
 {
   enum ErrorType {
@@ -184,7 +194,7 @@ class CLIWrapper
     kErrValType
   };
 
-  using ClientType = Client<float>;
+  using ClientType = Client;
   using ParamSetType = typename ClientType::ParamSetType;
   using ConstString = const std::string;
 

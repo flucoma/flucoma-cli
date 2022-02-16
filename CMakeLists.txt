@@ -17,7 +17,6 @@ option(DOCS "Generate HTML documentaiton" OFF)
 set(FLUID_DOCS_PATH "" CACHE PATH "Optional path to flucoma-docs; will be downloaded if absent")
 
 if (APPLE)
-	set(CMAKE_OSX_ARCHITECTURES x86_64)
   set(CMAKE_XCODE_GENERATE_SCHEME ON)
   set(CMAKE_OSX_DEPLOYMENT_TARGET "10.8" CACHE STRING "")
   #A consequence of targetting 10.8. Needs to be set globally from 10.15 onwards in order for the test program to compile successfully during configure 
@@ -45,14 +44,14 @@ FetchContent_Declare(
   flucoma-core
   GIT_REPOSITORY https://github.com/flucoma/flucoma-core.git
   GIT_PROGRESS TRUE
-  GIT_TAG 97f68a5
+  GIT_TAG origin/main
 )
 
 FetchContent_Declare(
   flucoma-docs
   GIT_REPOSITORY https://github.com/flucoma/flucoma-docs.git
   GIT_PROGRESS TRUE
-  GIT_TAG 0fb113e
+  GIT_TAG origin/main
 )
 
 if(FLUID_PATH)
@@ -111,6 +110,7 @@ target_sources(FLUID_CLI_WRAPPER
 find_package (Threads REQUIRED)
 set(THREADS_PREFER_PTHREAD_FLAG TRUE) 
 target_link_libraries (FLUID_CLI_WRAPPER INTERFACE Threads::Threads)
+
 
 SUBDIRLIST(PROJECT_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src)
 foreach (project_dir ${PROJECT_DIRS})

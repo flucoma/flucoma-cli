@@ -10,10 +10,10 @@ under the European Union’s Horizon 2020 research and innovation programme
 */
 
 #include <FluidCLIWrapper.hpp>
-#include <clients/nrt/BufStatsClient.hpp>
+#include <clients/rt/ChromaClient.hpp>
 
 int main(int argc, const char* argv[])
 {
   using namespace fluid::client;
-  return CLIWrapper<NRTThreadedBufferStatsClient>::run(argc, argv);
+  return CLIWrapper<NRTThreadedChromaClient>::run(argc, argv);
 }
