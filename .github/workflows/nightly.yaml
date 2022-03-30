@@ -1,9 +1,9 @@
 name: Nightly Releases
 
 on:
-  workflow_dispatch:
   push:
     branches: [ dev, ci/** ]
+  workflow_dispatch:
 
 jobs:
   docs:
