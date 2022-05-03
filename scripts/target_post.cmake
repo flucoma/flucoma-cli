@@ -30,13 +30,6 @@ target_include_directories(
   "${FLUID_VERSION_PATH}"
 )
 
-set_target_properties(${PROG} 
-    PROPERTIES
-    CXX_STANDARD 14
-    CXX_STANDARD_REQUIRED ON
-    CXX_EXTENSIONS OFF
-)
-
 if (APPLE)
   #targeting <= 10.9, need to explicitly set libc++
   target_compile_options(${PROG} PRIVATE -stdlib=libc++)
