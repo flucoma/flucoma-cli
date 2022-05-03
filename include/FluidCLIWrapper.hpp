@@ -21,12 +21,13 @@ under the European Union’s Horizon 2020 research and innovation programme
 #include <chrono>
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <regex>
 #include <string>
 #include <thread>
 #include <utility>
 #include <vector>
-
+#include <bitset>
 namespace fluid {
 namespace client {
 
@@ -245,6 +246,7 @@ class CLIWrapper
     }
     bool testString(ConstString s, BufferT::type) { return s[0] != '-'; }
     bool testString(ConstString s, InputBufferT::type) { return s[0] != '-'; }
+    bool testString(ConstString s, ChoicesT::type) { return s[0] != '-'; }
 
     template <typename T>
     ErrorType checkValues(index& i, index argc, const char* argv[], index nArgs,
@@ -319,6 +321,31 @@ class CLIWrapper
 
       return paramDescriptor<N>().defaultValue;
     }
+    
+    auto fromString(ConstString s,ChoicesT::type)
+    {
+      // vector<std::string> choices; 
+      std::istringstream c(s); 
+      c >> std::ws; 
+      std::string tmp; 
+      size_t choices{0}; 
+      auto desc = paramDescriptor<N>();
+      while(std::getline(c,tmp,' '))
+      {
+        index idx = desc.lookup(tmp); 
+        
+        if( idx > -1)
+        {
+          choices = choices | 1 << idx; 
+          continue; 
+        }
+        std::cerr << "Warning: unrecognised option " << tmp << std::endl;    
+      }
+      
+      return ChoicesT::type(choices); 
+      
+    }
+    
   };
 
   template <size_t N, typename T>
