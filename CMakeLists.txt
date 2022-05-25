@@ -16,10 +16,8 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/scripts")
 
 set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/release-packaging" CACHE PATH "")
-# message(FATAL_ERROR ${CMAKE_INSTALL_PREFIX})
 
 set(FLUID_PATH "" CACHE PATH "Optional path to the flucoma-core repo; will be downloaded if absent")
-# set(FLUID_M_PATH "" CACHE PATH "Optional path to the Fluid fluid_manipulation repo")
 option(DOCS "Generate HTML documentaiton" OFF)
 set(FLUID_DOCS_PATH "" CACHE PATH "Optional path to flucoma-docs; will be downloaded if absent")
 
@@ -55,41 +53,27 @@ if(FLUID_PATH)
     FETCHCONTENT_SOURCE_DIR_FLUCOMA-CORE ${FLUID_PATH} ABSOLUTE
   )
 endif()
-
-FetchContent_GetProperties(flucoma-core)
-if(NOT flucoma-core_POPULATED)
-  FetchContent_Populate(flucoma-core)
-  add_subdirectory(${flucoma-core_SOURCE_DIR} ${flucoma-core_BINARY_DIR})
-  include(flucoma_version)
-  include(flucoma-buildtools)
-	include(flucoma-buildtype)
-endif()
+FetchContent_MakeAvailable(flucoma-core)
+include(flucoma_version)
+include(flucoma-buildtools)
+include(flucoma-buildtype)
 
 set_if_toplevel(VAR FLUCOMA_CLI_RUNTIME_OUTPUT_DIRECTORY 
                 TOPLEVEL "${CMAKE_CURRENT_SOURCE_DIR}/bin"
               SUPERBUILD "${CMAKE_SOURCE_DIR}/cli_binaries/${CMAKE_HOST_SYSTEM_NAME}/${CMAKE_HOST_SYSTEM_PROCESSOR}")
 
 if(DOCS)
-
   if(FLUID_DOCS_PATH)
     get_filename_component(
       FETCHCONTENT_SOURCE_DIR_FLUCOMA-DOCS ${FLUID_DOCS_PATH} ABSOLUTE
     )
   endif()
 
-  FetchContent_GetProperties(flucoma-docs)
-  if(NOT flucoma-docs_POPULATED)
-    FetchContent_Populate(flucoma-docs)
-    file(GLOB_RECURSE DOC_SOURCE RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${flucoma-docs_SOURCE_DIR}/**/*.cpp" )
-    source_group("\\XML Doc Gen" FILES ${DOC_SOURCE})
-    add_subdirectory(${flucoma-docs_SOURCE_DIR} ${flucoma-docs_BINARY_DIR})
-    include(FlucomaDocs)
-    set(CLI_DOC_OUT "${CMAKE_BINARY_DIR}/cli_ref")
-    add_ref_target(cli "Making docs")
-  endif()
-
-  add_custom_target(CLI_MAKE_DOCS ALL DEPENDS MAKE_CLI_REF)
-    
+  FetchContent_MakeAvailable(flucoma-docs)
+  include(FlucomaDocs)
+  set(CLI_DOC_OUT "${CMAKE_BINARY_DIR}/cli_ref")
+  add_ref_target(cli "Making docs")
+  add_custom_target(CLI_MAKE_DOCS ALL DEPENDS MAKE_CLI_REF)  
 endif()
 
 set(LOCAL_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/include)
