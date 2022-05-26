@@ -8,7 +8,7 @@
 
 cmake_minimum_required(VERSION 3.18)
 
-include(FLuidClientStub)
+include(FluidClientStub)
 
 function(make_external_name client header output-var) 
   string(REPLACE "Buf" "fluid-" client ${client})
