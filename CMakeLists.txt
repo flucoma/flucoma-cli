@@ -17,6 +17,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/scripts")
 
 set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/release-packaging" CACHE PATH "")
 
+set(FLUID_BRANCH "origin/main" CACHE STRING "Branch to pull flucoma dependencies from")
 set(FLUID_PATH "" CACHE PATH "Optional path to the flucoma-core repo; will be downloaded if absent")
 option(DOCS "Generate HTML documentaiton" OFF)
 set(FLUID_DOCS_PATH "" CACHE PATH "Optional path to flucoma-docs; will be downloaded if absent")
@@ -38,14 +39,14 @@ FetchContent_Declare(
   flucoma-core
   GIT_REPOSITORY https://github.com/flucoma/flucoma-core.git
   GIT_PROGRESS TRUE
-  GIT_TAG origin/main
+  GIT_TAG ${FLUID_BRANCH}
 )
 
 FetchContent_Declare(
   flucoma-docs
   GIT_REPOSITORY https://github.com/flucoma/flucoma-docs.git
   GIT_PROGRESS TRUE
-  GIT_TAG origin/main
+  GIT_TAG ${FLUID_BRANCH}
 )
 
 if(FLUID_PATH)
