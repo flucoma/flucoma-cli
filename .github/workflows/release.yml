@@ -1,63 +1,43 @@
 name: Release
 on:
   workflow_dispatch:
-    inputs:
-      base_branch:
-        description: 'Base branch to deploy core from'
-        required: false
-        default: 'main'
   
 jobs:
-  docs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: flucoma/actions/env@v4
-        with:
-          branch: ${{ github.event.inputs.base_branch }}
-      - uses: flucoma/actions/docs@v4
-        with:
-          target: MAKE_CLI_REF
-          branch: ${{ github.event.inputs.base_branch }}
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: docs
-          path: build/cli_ref
-
   windows:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: flucoma/actions/env@v4
+      - uses: flucoma/actions/env@v5
+      - uses: flucoma/actions/cli@v5
         with:
-          branch: ${{ github.event.inputs.base_branch }}        
-      - uses: flucoma/actions/cli@v4
+          branch: origin/main        
 
-      - name: compress archive
-        run: tar -zcvf winbuild.tar.gz release-packaging
+    - name: compress archive
+      run: 7z a FluCoMa-CLI-Windows-nightly.zip FluidCorpusManipulation
+      working-directory: release-packaging
 
-      - uses: actions/upload-artifact@v2
-        with:
-          name: winbuild
-          path: winbuild.tar.gz
+    - uses: actions/upload-artifact@v2
+      with:
+        name: winbuild
+        path: release-packaging/FluCoMa-CLI-Windows-nightly.zip
 
   mac:
     runs-on: macos-11
     steps:
       - uses: actions/checkout@v2
-      - uses: flucoma/actions/env@v4
+      - uses: flucoma/actions/env@v5
+      - uses: flucoma/actions/cli@v5
         with:
-          branch: ${{ github.event.inputs.base_branch }} 
-      - uses: flucoma/actions/cli@v4
+          branch: origin/main 
 
       - name: compress archive
-        run: tar -zcvf macbuild.tar.gz release-packaging
+        run: zip -r FluCoMa-CLI-Mac-nightly.zip FluidCorpusManipulation
+        working-directory: release-packaging
 
       - uses: actions/upload-artifact@v2
         with:
           name: macbuild
-          path: macbuild.tar.gz
+          path: release-packaging/FluCoMa-CLI-Mac-nightly.zip
   
           
   linux:
@@ -66,18 +46,19 @@ jobs:
       version: ${{ steps.get-version.outputs.version }}
     steps:
       - uses: actions/checkout@v2
-      - uses: flucoma/actions/env@v4
+      - uses: flucoma/actions/env@v5
+      - uses: flucoma/actions/cli@v5    
         with:
-          branch: ${{ github.event.inputs.base_branch }}
-      - uses: flucoma/actions/cli@v4    
+          branch: origin/main
 
       - name: compress archive
-        run: tar -zcvf linuxbuild.tar.gz release-packaging
-
+        run: tar -zcvf FluCoMa-CLI-Linux-nightly.tar.gz FluidCorpusManipulation
+        working-directory: release-packaging 
+        
       - uses: actions/upload-artifact@v2
         with:
           name: linuxbuild
-          path: linuxbuild.tar.gz
+          path: release-packaging/FluCoMa-CLI-Linux-nightly.tar.gz
 
       - id: get-version
         run: echo "::set-output name=version::$(cat flucoma.version.rc)"
@@ -85,64 +66,20 @@ jobs:
 
   release:
     runs-on: ubuntu-latest
-    needs: [mac, windows, linux, docs]
+    needs: [mac, windows, linux]
 
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: docs
-          path: docs
-      
-      - uses: actions/download-artifact@v2
-        with:
           name: linuxbuild
-          path: linux
 
       - uses: actions/download-artifact@v2
         with:
           name: macbuild
-          path: mac
 
       - uses: actions/download-artifact@v2
         with:
           name: winbuild
-          path: win
-
-      #### LINUX ####
-      - name: untar
-        run: tar zxvf linuxbuild.tar.gz -C .
-        working-directory: ./linux
-
-      - name: copy docs to linux
-        run: cp -r docs linux/release-packaging/FluidCorpusManipulation
-
-      - name: compress linux
-        run: zip -r ../../FluCoMa-CLI-Linux.zip .
-        working-directory: linux/release-packaging
-
-      #### MAC ####
-      - name: untar
-        run: tar zxvf macbuild.tar.gz -C .
-        working-directory: ./mac
-
-      - name: copy docs to mac
-        run: cp -r docs mac/release-packaging/FluidCorpusManipulation
-
-      - name: compress mac
-        run: zip -r ../../FluCoMa-CLI-Mac.zip .
-        working-directory: mac/release-packaging
-
-      #### WINDOWS ####
-      - name: untar
-        run: tar zxvf winbuild.tar.gz -C .
-        working-directory: ./win
-
-      - name: copy docs to win
-        run: cp -r docs win/release-packaging/FluidCorpusManipulation
-
-      - name: compress mac
-        run: zip -r ../../FluCoMa-CLI-Windows.zip .
-        working-directory: win/release-packaging
       
       #### UPLOAD RELEASE ####
       - name: package and upload
