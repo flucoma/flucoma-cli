@@ -10,16 +10,16 @@ jobs:
       - uses: flucoma/actions/env@v5
       - uses: flucoma/actions/cli@v5
         with:
-          branch: origin/main        
+          branch: origin/main
+          
+      - name: compress archive
+        run: 7z a FluCoMa-CLI-Windows-nightly.zip FluidCorpusManipulation
+        working-directory: release-packaging
 
-    - name: compress archive
-      run: 7z a FluCoMa-CLI-Windows-nightly.zip FluidCorpusManipulation
-      working-directory: release-packaging
-
-    - uses: actions/upload-artifact@v2
-      with:
-        name: winbuild
-        path: release-packaging/FluCoMa-CLI-Windows-nightly.zip
+      - uses: actions/upload-artifact@v2
+        with:
+          name: winbuild
+          path: release-packaging/FluCoMa-CLI-Windows-nightly.zip
 
   mac:
     runs-on: macos-11
