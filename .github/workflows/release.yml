@@ -39,7 +39,6 @@ jobs:
           name: macbuild
           path: release-packaging/FluCoMa-CLI-Mac-nightly.zip
   
-          
   linux:
     runs-on: ubuntu-latest
     outputs:
@@ -62,7 +61,7 @@ jobs:
 
       - id: get-version
         run: echo "::set-output name=version::$(cat flucoma.version.rc)"
-        working-directory: core
+        working-directory: builds/_deps/flucoma-core-src
 
   release:
     runs-on: ubuntu-latest
