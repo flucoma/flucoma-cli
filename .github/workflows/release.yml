@@ -58,10 +58,12 @@ jobs:
         with:
           name: linuxbuild
           path: release-packaging/FluCoMa-CLI-Linux-nightly.tar.gz
+          
+      - run: ls
 
       - id: get-version
         run: echo "::set-output name=version::$(cat flucoma.version.rc)"
-        working-directory: builds/_deps/flucoma-core-src
+        working-directory: "${GITHUB_WORKSPACE}/builds/_deps/flucoma-core-src
 
   release:
     runs-on: ubuntu-latest
