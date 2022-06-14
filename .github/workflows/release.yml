@@ -13,7 +13,7 @@ jobs:
           branch: origin/main
           
       - name: compress archive
-        run: 7z a FluCoMa-CLI-Windows-nightly.zip FluidCorpusManipulation
+        run: 7z a FluCoMa-CLI-Windows.zip FluidCorpusManipulation
         working-directory: release-packaging
 
       - uses: actions/upload-artifact@v2
@@ -31,7 +31,7 @@ jobs:
           branch: origin/main 
 
       - name: compress archive
-        run: zip -r FluCoMa-CLI-Mac-nightly.zip FluidCorpusManipulation
+        run: zip -r FluCoMa-CLI-Mac.zip FluidCorpusManipulation
         working-directory: release-packaging
 
       - uses: actions/upload-artifact@v2
