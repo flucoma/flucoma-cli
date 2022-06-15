@@ -10,16 +10,16 @@ jobs:
       - uses: flucoma/actions/env@v5
       - uses: flucoma/actions/cli@v5
         with:
-          branch: origin/main        
+          branch: origin/main
+          
+      - name: compress archive
+        run: 7z a FluCoMa-CLI-Windows.zip FluidCorpusManipulation
+        working-directory: release-packaging
 
-    - name: compress archive
-      run: 7z a FluCoMa-CLI-Windows-nightly.zip FluidCorpusManipulation
-      working-directory: release-packaging
-
-    - uses: actions/upload-artifact@v2
-      with:
-        name: winbuild
-        path: release-packaging/FluCoMa-CLI-Windows-nightly.zip
+      - uses: actions/upload-artifact@v2
+        with:
+          name: winbuild
+          path: release-packaging/FluCoMa-CLI-Windows.zip
 
   mac:
     runs-on: macos-11
@@ -31,15 +31,14 @@ jobs:
           branch: origin/main 
 
       - name: compress archive
-        run: zip -r FluCoMa-CLI-Mac-nightly.zip FluidCorpusManipulation
+        run: zip -r FluCoMa-CLI-Mac.zip FluidCorpusManipulation
         working-directory: release-packaging
 
       - uses: actions/upload-artifact@v2
         with:
           name: macbuild
-          path: release-packaging/FluCoMa-CLI-Mac-nightly.zip
+          path: release-packaging/FluCoMa-CLI-Mac.zip
   
-          
   linux:
     runs-on: ubuntu-latest
     outputs:
@@ -52,17 +51,19 @@ jobs:
           branch: origin/main
 
       - name: compress archive
-        run: tar -zcvf FluCoMa-CLI-Linux-nightly.tar.gz FluidCorpusManipulation
+        run: tar -zcvf FluCoMa-CLI-Linux.tar.gz FluidCorpusManipulation
         working-directory: release-packaging 
         
       - uses: actions/upload-artifact@v2
         with:
           name: linuxbuild
-          path: release-packaging/FluCoMa-CLI-Linux-nightly.tar.gz
+          path: release-packaging/FluCoMa-CLI-Linux.tar.gz
+          
+      - run: ls -r
 
       - id: get-version
         run: echo "::set-output name=version::$(cat flucoma.version.rc)"
-        working-directory: core
+        working-directory: build/_deps/flucoma-core-src
 
   release:
     runs-on: ubuntu-latest
@@ -87,7 +88,7 @@ jobs:
         with:
           name: ${{ needs.linux.outputs.version }}
           body: "This is a release build of the FluCoMa CLI tools. The build hash is ${{ github.sha }}"
-          files: FluCoMa*.zip
+          files: FluCoMa*
           prerelease: true
           tag_name: ${{ needs.linux.outputs.version }}
           draft: false
