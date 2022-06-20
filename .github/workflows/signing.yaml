@@ -22,6 +22,7 @@ jobs:
           package: 'release-packaging'
           codesign_options: 'runtime'
           dmg: true
+          output: FluCoMa-CLI-Mac.dmg
           cert: ${{ secrets.CERT }}
           certpwd: ${{ secrets.CERTPWD }}
           teamid: ${{ secrets.WWDRTEAMID }}
