@@ -3,6 +3,7 @@ name: signing
 on:
   workflow_dispatch:
   push:
+    branches: [ dev, ci/** ]
 
 jobs:
   macos:
@@ -18,6 +19,7 @@ jobs:
         uses: flucoma/actions/distribution@main
         with:
           glob: 'fluid -t x'
+          package: 'release-packaging'
           cert: ${{ secrets.CERT }}
           certpwd: ${{ secrets.CERTPWD }}
           teamid: ${{ secrets.WWDRTEAMID }}
