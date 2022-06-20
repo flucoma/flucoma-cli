@@ -21,7 +21,7 @@ jobs:
           glob: 'fluid -t x'
           package: 'release-packaging'
           codesign_options: 'runtime'
-          dmg: true
+          output_type: 'dmg'
           output: FluCoMa-CLI-Mac.dmg
           cert: ${{ secrets.CERT }}
           certpwd: ${{ secrets.CERTPWD }}
@@ -32,7 +32,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: macbuild
-          path: release-packaging/FluidCorpusManipulation.dmg
+          path: release-packaging/FluCoMa-CLI-Mac.dmg
 
   release:
     runs-on: ubuntu-latest
