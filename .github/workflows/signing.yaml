@@ -54,7 +54,7 @@ jobs:
         with:
           name: FluCoMa CLI Nightly Release
           body: "This is a nightly build of the FluCoMa CLI tools. As such, be warned there may be bugs or other unexpected behaviour. The build hash is ${{ github.sha }}"
-          files: Fluid*.dmg
+          files: Flui*.dmg
           prerelease: true
           tag_name: signing-test
           draft: false
