@@ -21,20 +21,17 @@ jobs:
           glob: 'fluid -t x'
           package: 'release-packaging'
           codesign_options: 'runtime'
+          dmg: true
           cert: ${{ secrets.CERT }}
           certpwd: ${{ secrets.CERTPWD }}
           teamid: ${{ secrets.WWDRTEAMID }}
           apppwd: ${{ secrets.APPSTORECONNECTPWD }}
           appusr: ${{ secrets.APPSTORECONNECTUSERNAME }}
 
-      - name: compress archive
-        run: zip -r FluCoMa-CLI-Mac-nightly.zip FluidCorpusManipulation
-        working-directory: release-packaging
-
       - uses: actions/upload-artifact@v2
         with:
           name: macbuild
-          path: release-packaging/FluCoMa-CLI-Mac-nightly.zip
+          path: release-packaging/FluidCorpusManipulation.dmg
 
   release:
     runs-on: ubuntu-latest
