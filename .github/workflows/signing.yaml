@@ -17,7 +17,7 @@ jobs:
       - name: sign binaries
         uses: flucoma/actions/distribution@main
         with:
-          glob: ''
+          glob: 'fluid -t x'
           cert: ${{ secrets.CERT }}
           certpwd: ${{ secrets.CERTPWD }}
           teamid: ${{ secrets.WWDRTEAMID }}
