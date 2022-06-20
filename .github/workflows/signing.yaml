@@ -20,6 +20,7 @@ jobs:
         with:
           glob: 'fluid -t x'
           package: 'release-packaging'
+          codesign_options: 'runtime'
           cert: ${{ secrets.CERT }}
           certpwd: ${{ secrets.CERTPWD }}
           teamid: ${{ secrets.WWDRTEAMID }}
