@@ -1,9 +1,13 @@
 name: nightly
 
 on:
+  workflow_dispatch:
   push:
     branches: [ dev ]
-  workflow_dispatch:
+
+concurrency:
+  group: environment-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   windows:
