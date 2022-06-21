@@ -1,4 +1,4 @@
-name: Nightly Releases
+name: nightly
 
 on:
   push:
@@ -9,9 +9,9 @@ jobs:
   windows:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: flucoma/actions/env@v5      
-    - uses: flucoma/actions/cli@v5
+    - uses: actions/checkout@v3
+    - uses: flucoma/actions/env@main      
+    - uses: flucoma/actions/cli@main
       with:
         branch: origin/dev
 
@@ -19,17 +19,17 @@ jobs:
       run: 7z a FluCoMa-CLI-Windows-nightly.zip FluidCorpusManipulation
       working-directory: release-packaging
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: winbuild
         path: release-packaging/FluCoMa-CLI-Windows-nightly.zip
     
   macos:
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: flucoma/actions/env@v5      
-      - uses: flucoma/actions/cli@v5
+      - uses: actions/checkout@v3
+      - uses: flucoma/actions/env@main      
+      - uses: flucoma/actions/cli@main
         with:
           branch: origin/dev
 
@@ -47,17 +47,17 @@ jobs:
           apppwd: ${{ secrets.APPSTORECONNECTPWD }}
           appusr: ${{ secrets.APPSTORECONNECTUSERNAME }}
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: macbuild
           path: release-packaging/FluCoMa-CLI-Mac-nightly.dmg
       
   linux:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: flucoma/actions/env@v5
-      - uses: flucoma/actions/cli@v5
+      - uses: actions/checkout@v3
+      - uses: flucoma/actions/env@main
+      - uses: flucoma/actions/cli@main
         with:
           branch: origin/dev
 
@@ -65,7 +65,7 @@ jobs:
         run: tar -zcvf FluCoMa-CLI-Linux-nightly.tar.gz FluidCorpusManipulation
         working-directory: release-packaging 
         
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: linuxbuild
           path: release-packaging/FluCoMa-CLI-Linux-nightly.tar.gz
@@ -98,7 +98,7 @@ jobs:
         with:
           name: FluCoMa CLI Nightly Release
           body: "This is a nightly build of the FluCoMa CLI tools. As such, be warned there may be bugs or other unexpected behaviour. The build hash is ${{ github.sha }}"
-          files: FluCoMa-CLI-*
+          files: FluCoMa*
           prerelease: true
           tag_name: nightly
           draft: false
