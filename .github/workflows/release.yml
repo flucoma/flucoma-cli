@@ -37,7 +37,7 @@ jobs:
           package: 'release-packaging'
           codesign_options: 'runtime'
           output_type: 'dmg'
-          output: FluCoMa-CLI-Mac-nightly
+          output: FluCoMa-CLI-Mac
           cert: ${{ secrets.CERT }}
           certpwd: ${{ secrets.CERTPWD }}
           teamid: ${{ secrets.WWDRTEAMID }}
@@ -47,7 +47,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: macbuild
-          path: release-packaging/FluCoMa-CLI-Mac-nightly.dmg
+          path: release-packaging/FluCoMa-CLI-Mac.dmg
   
   linux:
     runs-on: ubuntu-latest
