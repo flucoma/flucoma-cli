@@ -16,13 +16,13 @@ where XXX is the complete path to the folder that contains your FluCoMa-CLI apps
 
 For instance:
 ```
-hpss -source FULLPATHTOASOUND -harmonic ~/Desktop/harm.wav -percussive ~/Desktop/perc.wav
+fluid-hpss -source FULLPATHTOASOUND -harmonic ~/Desktop/harm.wav -percussive ~/Desktop/perc.wav
 ```
 
 will put on the Desktop 2 files from the default HPSS settings, and:
 
 ```
-nmf -source FULLPATHTOASOUND -rank 5 -resynth ~/Desktop/components.wav
+fluid-nmf -source FULLPATHTOASOUND -components 5 -resynth ~/Desktop/components.wav
 ```
 
 will put on the desktop a single 5-channel audio file with the resynthesised 5 components requested.
