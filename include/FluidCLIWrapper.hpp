@@ -77,6 +77,11 @@ public:
         std::cerr << "Could not open file " << mPath << " for writing\n";
       }
     }
+    else if (allowCSV && !mPath.compare(0, 6, "stdout"))
+    {
+      FluidTensorView<const float, 2> view{ mData.data(), 0, numFrames(), numChans() };                         
+      std::cout << view.transpose();
+    }
     else
     {
       // TODO: file extensions/paths
