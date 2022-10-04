@@ -16,7 +16,6 @@ under the European Union’s Horizon 2020 research and innovation programme
 #include <clients/common/OfflineClient.hpp>
 #include <clients/common/ParameterSet.hpp>
 #include <clients/common/ParameterTypes.hpp>
-#include <data/FluidMemory.hpp>
 #include <FluidVersion.hpp>
 #include <cctype>
 #include <chrono>
@@ -403,7 +402,7 @@ public:
 
   static int run(index argc, const char* argv[])
   {
-    ParamSetType params(descriptors(), FluidDefaultAllocator());
+    ParamSetType params(descriptors());
     FlagsType    flags;
     flags.fill(false);
 
@@ -461,8 +460,8 @@ public:
 
     // Create client after all parameters are set
 
-    ClientType client(params, FluidContext());
-    Result     result;
+    ClientType   client(params);
+    Result result;
 
     client.enqueue(params);
     result = client.process();
