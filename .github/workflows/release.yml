@@ -72,7 +72,7 @@ jobs:
       - run: ls -r
 
       - id: get-version
-        run: echo "::set-output name=version::$(cat flucoma.version.rc)"
+        run: echo "version=$(cat flucoma.version.rc)" >> $GITHUB_OUTPUT
         working-directory: build/_deps/flucoma-core-src
 
   release:
