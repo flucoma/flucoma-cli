@@ -10,7 +10,7 @@ jobs:
       - uses: flucoma/actions/env@main
       - uses: flucoma/actions/cli@main
         with:
-          branch: origin/production
+          branch: origin/${{ github.ref_name }}
           
       - name: compress archive
         run: 7z a FluCoMa-CLI-Windows.zip FluidCorpusManipulation
@@ -28,7 +28,7 @@ jobs:
       - uses: flucoma/actions/env@main
       - uses: flucoma/actions/cli@main
         with:
-          branch: origin/production 
+          branch: origin/${{ github.ref_name }} 
 
       - name: sign binaries
         uses: flucoma/actions/distribution@main
@@ -58,7 +58,7 @@ jobs:
       - uses: flucoma/actions/env@main
       - uses: flucoma/actions/cli@main    
         with:
-          branch: origin/production
+          branch: origin/${{ github.ref_name }}
 
       - name: compress archive
         run: tar -zcvf FluCoMa-CLI-Linux.tar.gz FluidCorpusManipulation
