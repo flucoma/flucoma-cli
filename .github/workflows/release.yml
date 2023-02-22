@@ -96,11 +96,13 @@ jobs:
 
       - name: delete pre-existing release
         uses: actions/github-script@v5
+        env: 
+          DATA: ${{ needs.linux.outputs.version }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const { owner, repo } = context.repo
-            await github.rest.git.deleteRef({ owner, repo, ref: needs.linux.outputs.version })
+            await github.rest.git.deleteRef({ owner, repo, ref: process.env.DATA })
 
       - name: package and upload
         uses: softprops/action-gh-release@v1
