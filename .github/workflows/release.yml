@@ -93,6 +93,15 @@ jobs:
           name: winbuild
       
       #### UPLOAD RELEASE ####
+
+      - name: delete pre-existing release
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const { owner, repo } = context.repo
+            await github.rest.git.deleteRef({ owner, repo, ref: needs.linux.outputs.version })
+
       - name: package and upload
         uses: softprops/action-gh-release@v1
         with:
