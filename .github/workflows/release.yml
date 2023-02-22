@@ -95,14 +95,12 @@ jobs:
       #### UPLOAD RELEASE ####
 
       - name: delete pre-existing release
-        uses: actions/github-script@v5
-        env: 
-          DATA: ${{ needs.linux.outputs.version }}
+        uses: dev-drprasad/delete-tag-and-release@v0.2.0
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            const { owner, repo } = context.repo
-            await github.rest.git.deleteRef({ owner, repo, ref: process.env.DATA })
+          delete_release: true # default: false
+          tag_name: ${{ needs.linux.outputs.version }} # tag name to delete
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: package and upload
         uses: softprops/action-gh-release@v1
