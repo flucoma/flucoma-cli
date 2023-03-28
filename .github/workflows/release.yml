@@ -10,7 +10,7 @@ jobs:
       - uses: flucoma/actions/env@main
       - uses: flucoma/actions/cli@main
         with:
-          branch: origin/production
+          branch: origin/${{ github.ref_name }}
           
       - name: compress archive
         run: 7z a FluCoMa-CLI-Windows.zip FluidCorpusManipulation
@@ -28,7 +28,7 @@ jobs:
       - uses: flucoma/actions/env@main
       - uses: flucoma/actions/cli@main
         with:
-          branch: origin/production 
+          branch: origin/${{ github.ref_name }} 
 
       - name: sign binaries
         uses: flucoma/actions/distribution@main
@@ -58,7 +58,7 @@ jobs:
       - uses: flucoma/actions/env@main
       - uses: flucoma/actions/cli@main    
         with:
-          branch: origin/production
+          branch: origin/${{ github.ref_name }}
 
       - name: compress archive
         run: tar -zcvf FluCoMa-CLI-Linux.tar.gz FluidCorpusManipulation
@@ -72,7 +72,7 @@ jobs:
       - run: ls -r
 
       - id: get-version
-        run: echo "::set-output name=version::$(cat flucoma.version.rc)"
+        run: echo "version=$(cat flucoma.version.rc)" >> $GITHUB_OUTPUT
         working-directory: build/_deps/flucoma-core-src
 
   release:
@@ -93,6 +93,15 @@ jobs:
           name: winbuild
       
       #### UPLOAD RELEASE ####
+
+      - name: delete pre-existing release
+        uses: dev-drprasad/delete-tag-and-release@v0.2.1
+        with:
+          delete_release: true # default: false
+          tag_name: ${{ needs.linux.outputs.version }} # tag name to delete
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: package and upload
         uses: softprops/action-gh-release@v1
         with:
@@ -101,4 +110,5 @@ jobs:
           files: FluCoMa*
           prerelease: true
           tag_name: ${{ needs.linux.outputs.version }}
+          target_commitish: ${{ github.sha }}
           draft: false
