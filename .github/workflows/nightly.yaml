@@ -101,7 +101,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           name: FluCoMa CLI Nightly Release
-          artifacts: "*.zip"
+          artifacts: "FluCoMa*"
           body: "This is a nightly build of the FluCoMa CLI tools. As such, be warned there may be bugs or other unexpected behaviour. The build hash is ${{ github.sha }}"
           tag: nightly
           prerelease: true
