@@ -21,7 +21,6 @@ target_link_libraries(${PROG}
   PRIVATE
   FLUID_DECOMPOSITION
   FLUID_CLI_WRAPPER
-  HISSTools_AudioFile
 )
 
 target_include_directories(

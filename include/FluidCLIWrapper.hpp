@@ -10,8 +10,8 @@ under the European Union’s Horizon 2020 research and innovation programme
 
 #pragma once
 
-#include <AudioFile/IAudioFile.h>
-#include <AudioFile/OAudioFile.h>
+#include <audio_file/in_file.hpp>
+#include <audio_file/out_file.hpp>
 #include <clients/common/FluidBaseClient.hpp>
 #include <clients/common/OfflineClient.hpp>
 #include <clients/common/ParameterSet.hpp>
@@ -41,15 +41,15 @@ public:
   {
     // TODO: only read if needed!...
 
-    HISSTools::IAudioFile file(mPath);
+    htl::in_audio_file file(mPath);
   
-    mReadError = file.getErrorFlags();
+    mReadError = file.error_flags();
   
-    if (file.isOpen())
+    if (file.is_open())
     {
-      resize(file.getFrames(), file.getChannels(), file.getSamplingRate());
+      resize(file.frames(), file.channels(), file.sampling_rate());
       file.seek();
-      file.readInterleaved(mData.data(),file.getFrames());
+      file.read_interleaved(mData.data(),file.frames());
     }
   }
 
@@ -82,25 +82,25 @@ public:
     {
       // TODO: file extensions/paths
 
-      constexpr auto fileType = HISSTools::BaseAudioFile::kAudioFileWAVE;
-      constexpr auto depthType = HISSTools::BaseAudioFile::kAudioFileFloat32;
+      constexpr auto fileType = htl::audio_file_format::file_type::wave;
+      constexpr auto depthType = htl::audio_file_format::pcm_format::float32;
 
       uint16_t chans = static_cast<uint16_t>(
           std::min(asSigned(std::numeric_limits<uint16_t>::max()), numChans()));
 
-        HISSTools::OAudioFile file(mPath, fileType, depthType, chans,
+      htl::out_audio_file file(mPath, fileType, depthType, chans,
                                  mSamplingRate);
 
-      if (file.isOpen())
+      if (file.is_open())
       {
         std::cout << "Writing " << mPath << '\n';
         file.seek();
-        file.writeInterleaved(mData.data(), static_cast<uint32_t>(numFrames()));
+        file.write_interleaved(mData.data(), static_cast<uint32_t>(numFrames()));
         
-        if(file.getIsError())
+        if(file.is_error())
         {
           result = false;
-          for(auto&& e:file.getErrors()) std::cerr << HISSTools::BaseAudioFile::getErrorString(e) << '\n';
+          for(auto&& e:file.get_errors()) std::cerr << file.error_string(e) << '\n';
         }
       }
       else
@@ -385,10 +385,10 @@ class CLIWrapper
         if(ifile->readError())
         {
           std::cout << ifile->readError() << '\n'; 
-          using Audio = HISSTools::BaseAudioFile;
+          using AudioFile = htl::base_audio_file;
           result = false;
-          std::vector<Audio::Error> errors = Audio::extractErrorsFromFlags(ifile->readError());
-          for(auto&& e:errors) std::cerr << Audio::getErrorString(e) << '\n';
+          std::vector<AudioFile::error_type> errors = AudioFile::extract_errors_from_flags(ifile->readError());
+          for(auto&& e:errors) std::cerr << AudioFile::error_string(e) << '\n';
         }
       }
     }
