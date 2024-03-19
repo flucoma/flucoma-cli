@@ -5,3 +5,4 @@ winbuild
 **/.DS_Store
 release-packaging/
 docs
+.vscode
