@@ -1,0 +1,12 @@
+* text=auto
+
+*.yml text
+*.gitignore text
+*.maxpat text
+*.hpp text
+*.cmake text
+*.md text
+*.txt text
+*.yaml text
+
+*.png binary
