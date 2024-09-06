@@ -23,7 +23,7 @@ jobs:
       run: 7z a FluCoMa-CLI-Windows-nightly.zip FluidCorpusManipulation
       working-directory: release-packaging
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4.3.6
       with:
         name: winbuild
         path: release-packaging/FluCoMa-CLI-Windows-nightly.zip
@@ -51,7 +51,7 @@ jobs:
           apppwd: ${{ secrets.APPSTORECONNECTPWD }}
           appusr: ${{ secrets.APPSTORECONNECTUSERNAME }}
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4.3.6
         with:
           name: macbuild
           path: release-packaging/FluCoMa-CLI-Mac-nightly.dmg
@@ -69,7 +69,7 @@ jobs:
         run: tar -zcvf FluCoMa-CLI-Linux-nightly.tar.gz FluidCorpusManipulation
         working-directory: release-packaging 
         
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4.3.6
         with:
           name: linuxbuild
           path: release-packaging/FluCoMa-CLI-Linux-nightly.tar.gz
