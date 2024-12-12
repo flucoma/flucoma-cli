@@ -13,13 +13,13 @@ jobs:
           branch: origin/${{ github.ref_name }}
           
       - name: compress archive
-        run: 7z a FluCoMa-CLI-Windows.zip FluidCorpusManipulation
+        run: 7z a FluCoMa-CLI-Windows-x64.zip FluidCorpusManipulation
         working-directory: release-packaging
 
       - uses: actions/upload-artifact@v4.3.6
         with:
           name: winbuild
-          path: release-packaging/FluCoMa-CLI-Windows.zip
+          path: release-packaging/FluCoMa-CLI-Windows-x64.zip
 
   mac:
     runs-on: macos-latest
@@ -61,13 +61,13 @@ jobs:
           branch: origin/${{ github.ref_name }}
 
       - name: compress archive
-        run: tar -zcvf FluCoMa-CLI-Linux.tar.gz FluidCorpusManipulation
+        run: tar -zcvf FluCoMa-CLI-Linux-x64.tar.gz FluidCorpusManipulation
         working-directory: release-packaging 
         
       - uses: actions/upload-artifact@v4.3.6
         with:
           name: linuxbuild
-          path: release-packaging/FluCoMa-CLI-Linux.tar.gz
+          path: release-packaging/FluCoMa-CLI-Linux-x64.tar.gz
           
       - run: ls -r
 
