@@ -50,7 +50,7 @@ jobs:
           path: release-packaging/FluCoMa-CLI-Mac.dmg
   
   linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     outputs:
       version: ${{ steps.get-version.outputs.version }}
     steps:
@@ -76,7 +76,7 @@ jobs:
         working-directory: build/_deps/flucoma-core-src
 
   release:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [mac, windows, linux]
 
     steps:
