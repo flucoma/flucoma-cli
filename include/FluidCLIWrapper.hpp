@@ -10,14 +10,15 @@ under the European Union’s Horizon 2020 research and innovation programme
 
 #pragma once
 
+#include <flucoma/clients/common/FluidBaseClient.hpp>
+#include <flucoma/clients/common/OfflineClient.hpp>
+#include <flucoma/clients/common/ParameterSet.hpp>
+#include <flucoma/clients/common/ParameterTypes.hpp>
+#include <flucoma/data/FluidMemory.hpp>
+#include <flucoma/FluidVersion.hpp>
+
 #include <audio_file/in_file.hpp>
 #include <audio_file/out_file.hpp>
-#include <clients/common/FluidBaseClient.hpp>
-#include <clients/common/OfflineClient.hpp>
-#include <clients/common/ParameterSet.hpp>
-#include <clients/common/ParameterTypes.hpp>
-#include <data/FluidMemory.hpp>
-#include <FluidVersion.hpp>
 #include <cctype>
 #include <chrono>
 #include <iomanip>
